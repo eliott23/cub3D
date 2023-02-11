@@ -42,6 +42,5 @@ int main(int ac, char **av)
     m_fill(&inf, pd);
     put_player(&inf, pd);
     put_lines(&inf, pd);
-    mlx_pixel_put(inf.mlx, inf.win_ptr, 300, 300, create_trgb(0, 255, 0, 0));
     mlx_loop(inf.mlx);
 }
