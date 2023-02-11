@@ -59,27 +59,29 @@ void    m_fill(t_inf *inf, t_pd pd)
     }
 }
 
-// void    put_rays()
-// {
-// }
+void    put_rays()
+{
+
+}
 
 double  deg_to_rad(double angle)
 {
     angle = angle * (M_PI / 180);
     return (angle);
 }
+
 int main(int ac, char **av)
 {
     t_inf   inf;
     t_pd    pd;
 
+    inf.fov = 90;
     pd = m_function(ac, av);
     inf.mlx = mlx_init();
     inf.win_ptr = mlx_new_window(inf.mlx, pd.max_width * 60, pd.max_height * 60, "3D");
     m_fill(&inf, pd);
     put_player(&inf, &pd);
     put_lines(&inf, pd);
-    ray(&inf, deg_to_rad(265), &pd, 1);
-    ray(&inf, deg_to_rad(265), &pd, 0);
+    ray(&inf, deg_to_rad(5), &pd, 1);
     mlx_loop(inf.mlx);
 }

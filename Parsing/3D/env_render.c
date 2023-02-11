@@ -65,3 +65,7 @@ void    put_player(t_inf *inf, t_pd *pd)
         j++;
     }
 }
+
+void    set_fov(t_inf *inf)
+{
+}
