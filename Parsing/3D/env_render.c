@@ -52,7 +52,6 @@ void    put_player(t_inf *inf, t_pd *pd)
             break;
         j++;
     }
-    printf("i = %d && j = %d\n", i, j);
     t = i;
     t2 = j;
     while (j < pd->max_height * 60 && j < t2 + 8)

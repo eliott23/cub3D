@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <mlx.h>
+#include <math.h>
 
 typedef struct inf{
     void    *win_ptr;
@@ -12,6 +13,7 @@ typedef struct inf{
     void    *player;
     int     pi;
     int     pj;
+    double  fov; 
 }   t_inf;
 void    put_player(t_inf *inf, t_pd *pd);
 int	create_trgb(int t, int r, int g, int b);
