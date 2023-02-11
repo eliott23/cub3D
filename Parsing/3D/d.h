@@ -10,8 +10,10 @@ typedef struct inf{
     int     *p_w;
     int     *p_h;
     void    *player;
+    int     pi;
+    int     pj;
 }   t_inf;
-void    put_player(t_inf *inf, t_pd pd);
+void    put_player(t_inf *inf, t_pd *pd);
 int	create_trgb(int t, int r, int g, int b);
 void    put_lines(t_inf *inf, t_pd pd);
 #endif 

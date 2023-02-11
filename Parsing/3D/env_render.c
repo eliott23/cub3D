@@ -21,7 +21,7 @@ void    put_lines(t_inf *inf, t_pd pd)
     }
 }
 
-void    put_player(t_inf *inf, t_pd pd)
+void    put_player(t_inf *inf, t_pd *pd)
 {
     int i;
     int j;
@@ -32,15 +32,17 @@ void    put_player(t_inf *inf, t_pd pd)
     i = 0;
     j = 0;
     f = 0;
-    while (pd.map[j])
+    while (pd->map[j])
     {
         i = 0;
-        while (pd.map[j][i])
+        while (pd->map[j][i])
         {
-            if (pd.map[j][i] == 'N') // check later;
+            if (pd->map[j][i] == 'N') // check later;
             {
                 i = i * 60;
+                inf->pi = i;
                 j = j * 60;
+                inf->pj = j;
                 f = 1;
                 break;
             }
@@ -53,10 +55,10 @@ void    put_player(t_inf *inf, t_pd pd)
     printf("i = %d && j = %d\n", i, j);
     t = i;
     t2 = j;
-    while (j < pd.max_height * 60 && j < t2 + 8)
+    while (j < pd->max_height * 60 && j < t2 + 8)
     {
         i = t;
-        while (i < pd.max_width * 60 && i < t + 8)
+        while (i < pd->max_width * 60 && i < t + 8)
         {
             mlx_pixel_put(inf->mlx, inf->win_ptr, i, j, create_trgb(0, 255, 0, 0));
             i++;

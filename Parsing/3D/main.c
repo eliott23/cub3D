@@ -6,7 +6,6 @@ int	create_trgb(int t, int r, int g, int b)
 	return (t << 24 | r << 16 | g << 8 | b);
 }
 
-
 void    m_fill(t_inf *inf, t_pd pd)
 {
     int i;
@@ -40,7 +39,7 @@ int main(int ac, char **av)
     inf.mlx = mlx_init();
     inf.win_ptr = mlx_new_window(inf.mlx, pd.max_width * 60, pd.max_height * 60, "3D");
     m_fill(&inf, pd);
-    put_player(&inf, pd);
+    put_player(&inf, &pd);
     put_lines(&inf, pd);
     mlx_loop(inf.mlx);
 }
