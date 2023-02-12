@@ -1,11 +1,18 @@
 #include "d.h"
+int check_obs(t_pd *pd, int i, int j)
+{
+    if (pd->map[j / 60][i / 60] == '1')
+        return (1);
+    return (0);
+}
 
 int calc_cord(double angle, int l, int j, int i, t_pd *pd)
 {
     if (!pd->map[j / 60])
         return (0);
-    printf("i = %d\nj = %d\n", i, j);
-    if (pd->map[j / 60][i / 60] == '1')
+    if (j >= 299 && j <= 301 && i <= 541 && i >= 539)
+        printf("i = %d\nj = %d\n", i, j);
+    if (pd->map[j / 60][i / 60] == '1' || pd->map[j / 60][(i + 1) / 60] == '1')
         return (0);
     return (1);
 }
@@ -66,17 +73,22 @@ double  deg_to_rad(double angle)
 }
 int	key_hook(int keycode, t_inf *inf)
 {
+    printf("keycode %d\n", keycode);
+    if (keycode == 125)
+    {
+        
+    }
     if (keycode == 2)
     {
         ray(inf, deg_to_rad(inf->fov), inf->pd, 0);
-        ray(inf, deg_to_rad(inf->fov + 3), inf->pd, 1);
-        inf->fov += 3;
+        ray(inf, deg_to_rad(inf->fov + inf->step), inf->pd, 1);
+        inf->fov += inf->step;
     }
     if (!keycode)
     {
         ray(inf, deg_to_rad(inf->fov), inf->pd, 0);
-        ray(inf, deg_to_rad(inf->fov - 3), inf->pd, 1);
-        inf->fov -= 3;
+        ray(inf, deg_to_rad(inf->fov - inf->step), inf->pd, 1);
+        inf->fov -= inf->step;
     }
 	return (0);
 }
@@ -92,12 +104,13 @@ int main(int ac, char **av)
     t_pd    pd;
 
     inf.fov = 0;
+    inf.step = 5;
     pd = m_function(ac, av);
     inf.pd = &pd;
     inf.mlx = mlx_init();
     inf.win_ptr = mlx_new_window(inf.mlx, pd.max_width * 60, pd.max_height * 60, "3D");
     m_fill(&inf, pd);
-    put_player(&inf, &pd);
+    put_player(&inf, &pd, 0);
     put_lines(&inf, pd);
     ray(&inf, deg_to_rad(inf.fov), &pd, 1);
     printf("pi = %d pj = %d\n", inf.pi, inf.pj);

@@ -16,8 +16,9 @@ typedef struct inf{
     int     pj;
     double  fov; 
     t_pd    *pd;
+    int     step;
 }   t_inf;
-void    put_player(t_inf *inf, t_pd *pd);
+void    put_player(t_inf *inf, t_pd *pd, int m);
 int	create_trgb(int t, int r, int g, int b);
 void    put_lines(t_inf *inf, t_pd pd);
 #endif 
