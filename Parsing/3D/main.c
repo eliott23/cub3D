@@ -10,8 +10,6 @@ int calc_cord(double angle, int l, int j, int i, t_pd *pd)
 {
     if (!pd->map[j / 60])
         return (0);
-    if (j >= 299 && j <= 301 && i <= 541 && i >= 539)
-        printf("i = %d\nj = %d\n", i, j);
     if (pd->map[j / 60][i / 60] == '1' || pd->map[j / 60][(i + 1) / 60] == '1')
         return (0);
     return (1);
@@ -71,6 +69,7 @@ double  deg_to_rad(double angle)
     angle = angle * (M_PI / 180);
     return (angle);
 }
+
 int	key_hook(int keycode, t_inf *inf)
 {
     int t2;
@@ -82,8 +81,8 @@ int	key_hook(int keycode, t_inf *inf)
         t1 = inf->pi;
         t2 = inf->pj;
         ray(inf, deg_to_rad(inf->fov), inf->pd, 0);
-        inf->pi += (10 * cos(deg_to_rad(inf->fov)));
-        inf->pj += (10 * sin(deg_to_rad(inf->fov)));
+        inf->pi += (8 * cos(deg_to_rad(inf->fov)));
+        inf->pj += (8 * sin(deg_to_rad(inf->fov)));
         printf("fov = %f\n", inf->fov);
         printf("forward -> pi : %d\n", inf->pi - t1);
         printf("forward -> pj : %d\n", inf->pj- t2);
@@ -94,8 +93,8 @@ int	key_hook(int keycode, t_inf *inf)
         t1 = inf->pi;
         t2 = inf->pj;
         ray(inf, deg_to_rad(inf->fov), inf->pd, 0);
-        inf->pi -= ( 10 * cos(deg_to_rad(inf->fov)));
-        inf->pj -= ( 10 * sin(deg_to_rad(inf->fov)));
+        inf->pi -= ( 8 * cos(deg_to_rad(inf->fov)));
+        inf->pj -= ( 8 * sin(deg_to_rad(inf->fov)));
         printf("fov = %f\n", inf->fov);
         printf("backward -> pi : %d\n", inf->pi - t1);
         printf("backward -> pj : %d\n", inf->pj- t2);
@@ -116,18 +115,25 @@ int	key_hook(int keycode, t_inf *inf)
 	return (0);
 }
 
-void    put_rays()
+void    put_rays(t_inf *inf, int m)
 {
-}
+    double i;
 
+    i = inf->fov - 10;
+        while (i <= inf->fov + 10)
+        {
+            ray(inf, deg_to_rad(i), inf->pd, !m);
+            i++;
+        }
+}
 
 int main(int ac, char **av)
 {
     t_inf   inf;
     t_pd    pd;
 
-    inf.fov = 0;
-    inf.step = 5;
+    inf.fov = 90;
+    inf.step = 4;
     pd = m_function(ac, av);
     inf.pd = &pd;
     inf.mlx = mlx_init();
@@ -135,7 +141,7 @@ int main(int ac, char **av)
     m_fill(&inf, pd);
     put_player(&inf, &pd, 1);
     put_lines(&inf, pd);
-    ray(&inf, deg_to_rad(inf.fov), &pd, 1);
+    put_rays(&inf, 0);
     printf("pi = %d pj = %d\n", inf.pi, inf.pj);
     mlx_hook(inf.win_ptr, 2, 0, key_hook, &inf);
     mlx_loop(inf.mlx);

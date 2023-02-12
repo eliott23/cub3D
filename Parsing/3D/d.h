@@ -12,8 +12,8 @@ typedef struct inf{
     int     *p_w;
     int     *p_h;
     void    *player;
-    int     pi;
-    int     pj;
+    double     pi;
+    double     pj;
     double  fov; 
     t_pd    *pd;
     int     step;
