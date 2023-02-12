@@ -76,7 +76,7 @@ int	key_hook(int keycode, t_inf *inf)
     printf("keycode %d\n", keycode);
     if (keycode == 125)
     {
-        
+
     }
     if (keycode == 2)
     {
@@ -110,11 +110,10 @@ int main(int ac, char **av)
     inf.mlx = mlx_init();
     inf.win_ptr = mlx_new_window(inf.mlx, pd.max_width * 60, pd.max_height * 60, "3D");
     m_fill(&inf, pd);
-    put_player(&inf, &pd, 0);
+    put_player(&inf, &pd, 1);
     put_lines(&inf, pd);
     ray(&inf, deg_to_rad(inf.fov), &pd, 1);
     printf("pi = %d pj = %d\n", inf.pi, inf.pj);
-    // mlx_key_hook(inf.win_ptr, key_hook, &inf);
-    mlx_hook(inf.win_ptr, 02, 0, key_hook, &inf);
+    mlx_hook(inf.win_ptr, 2, 0, key_hook, &inf);
     mlx_loop(inf.mlx);
 }
