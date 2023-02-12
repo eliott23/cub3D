@@ -1,4 +1,3 @@
-#include "../p.h"
 #include "d.h"
 
 int calc_cord(double angle, int l, int j, int i, t_pd *pd)
@@ -23,7 +22,7 @@ void    ray(t_inf *inf, double angle, t_pd *pd, int m)
         if (m)
             mlx_pixel_put(inf->mlx, inf->win_ptr, t, t2, create_trgb(50, 255, 0, 0));
         else if ((t % 60) && (t2 % 60)) 
-            mlx_pixel_put(inf->mlx, inf->win_ptr, t, t2, create_trgb(50, 192, 192, 192));
+            mlx_pixel_put(inf->mlx, inf->win_ptr, t, t2, create_trgb(0, 192, 192, 192));
         else
             mlx_pixel_put(inf->mlx, inf->win_ptr, t, t2, create_trgb(100, 32, 32, 32));
         l++;
@@ -59,29 +58,50 @@ void    m_fill(t_inf *inf, t_pd pd)
     }
 }
 
-void    put_rays()
-{
-
-}
-
 double  deg_to_rad(double angle)
 {
     angle = angle * (M_PI / 180);
     return (angle);
 }
+int	key_hook(int keycode, t_inf *inf)
+{
+    printf("this is hte keycode %d\n", keycode);
+    if (keycode == 2)
+    {
+        ray(inf, deg_to_rad(inf->fov), inf->pd, 0);
+        ray(inf, deg_to_rad(inf->fov + 3), inf->pd, 1);
+        inf->fov += 3;
+    }
+    if (!keycode)
+    {
+        ray(inf, deg_to_rad(inf->fov), inf->pd, 0);
+        ray(inf, deg_to_rad(inf->fov - 3), inf->pd, 1);
+        inf->fov -= 3;
+    }
+	return (0);
+}
+
+void    put_rays()
+{
+
+}
+
 
 int main(int ac, char **av)
 {
     t_inf   inf;
     t_pd    pd;
 
-    inf.fov = 90;
+    inf.fov = 0;
     pd = m_function(ac, av);
+    inf.pd = &pd;
     inf.mlx = mlx_init();
     inf.win_ptr = mlx_new_window(inf.mlx, pd.max_width * 60, pd.max_height * 60, "3D");
     m_fill(&inf, pd);
     put_player(&inf, &pd);
     put_lines(&inf, pd);
-    ray(&inf, deg_to_rad(5), &pd, 1);
+    ray(&inf, deg_to_rad(inf.fov), &pd, 1);
+    // mlx_key_hook(inf.win_ptr, key_hook, &inf);
+    mlx_hook(inf.win_ptr, 02, 0, key_hook, &inf);
     mlx_loop(inf.mlx);
 }

@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <mlx.h>
 #include <math.h>
+#include "../p.h"
 
 typedef struct inf{
     void    *win_ptr;
@@ -14,6 +15,7 @@ typedef struct inf{
     int     pi;
     int     pj;
     double  fov; 
+    t_pd    *pd;
 }   t_inf;
 void    put_player(t_inf *inf, t_pd *pd);
 int	create_trgb(int t, int r, int g, int b);

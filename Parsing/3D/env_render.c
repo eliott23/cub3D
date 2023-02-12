@@ -54,10 +54,10 @@ void    put_player(t_inf *inf, t_pd *pd)
     }
     t = i;
     t2 = j;
-    while (j < pd->max_height * 60 && j < t2 + 8)
+    while (j < pd->max_height * 60 && j < t2 + 5)
     {
         i = t;
-        while (i < pd->max_width * 60 && i < t + 8)
+        while (i < pd->max_width * 60 && i < t + 5)
         {
             mlx_pixel_put(inf->mlx, inf->win_ptr, i, j, create_trgb(0, 255, 0, 0));
             i++;
