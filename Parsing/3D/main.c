@@ -73,10 +73,33 @@ double  deg_to_rad(double angle)
 }
 int	key_hook(int keycode, t_inf *inf)
 {
+    int t2;
+    int t1;
+
     printf("keycode %d\n", keycode);
+    if (keycode == 126)
+    {
+        t1 = inf->pi;
+        t2 = inf->pj;
+        ray(inf, deg_to_rad(inf->fov), inf->pd, 0);
+        inf->pi += (10 * cos(deg_to_rad(inf->fov)));
+        inf->pj += (10 * sin(deg_to_rad(inf->fov)));
+        printf("fov = %f\n", inf->fov);
+        printf("forward -> pi : %d\n", inf->pi - t1);
+        printf("forward -> pj : %d\n", inf->pj- t2);
+        ray(inf, deg_to_rad(inf->fov), inf->pd, 1);
+    }
     if (keycode == 125)
     {
-
+        t1 = inf->pi;
+        t2 = inf->pj;
+        ray(inf, deg_to_rad(inf->fov), inf->pd, 0);
+        inf->pi -= ( 10 * cos(deg_to_rad(inf->fov)));
+        inf->pj -= ( 10 * sin(deg_to_rad(inf->fov)));
+        printf("fov = %f\n", inf->fov);
+        printf("backward -> pi : %d\n", inf->pi - t1);
+        printf("backward -> pj : %d\n", inf->pj- t2);
+        ray(inf, deg_to_rad(inf->fov), inf->pd, 1);
     }
     if (keycode == 2)
     {
