@@ -4,6 +4,7 @@ int calc_cord(double angle, int l, int j, int i, t_pd *pd)
 {
     if (!pd->map[j / 60])
         return (0);
+    printf("i = %d\nj = %d\n", i, j);
     if (pd->map[j / 60][i / 60] == '1')
         return (0);
     return (1);
@@ -65,7 +66,6 @@ double  deg_to_rad(double angle)
 }
 int	key_hook(int keycode, t_inf *inf)
 {
-    printf("this is hte keycode %d\n", keycode);
     if (keycode == 2)
     {
         ray(inf, deg_to_rad(inf->fov), inf->pd, 0);
@@ -83,7 +83,6 @@ int	key_hook(int keycode, t_inf *inf)
 
 void    put_rays()
 {
-
 }
 
 
@@ -101,6 +100,7 @@ int main(int ac, char **av)
     put_player(&inf, &pd);
     put_lines(&inf, pd);
     ray(&inf, deg_to_rad(inf.fov), &pd, 1);
+    printf("pi = %d pj = %d\n", inf.pi, inf.pj);
     // mlx_key_hook(inf.win_ptr, key_hook, &inf);
     mlx_hook(inf.win_ptr, 02, 0, key_hook, &inf);
     mlx_loop(inf.mlx);
