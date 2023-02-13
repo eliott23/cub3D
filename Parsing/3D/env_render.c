@@ -69,7 +69,7 @@ void    put_player(t_inf *inf, t_pd *pd, int m)
     }
 }
 
-void    put_point(double i, double j)
+void    put_point(t_inf *inf, double i, double j)
 {
     int x;
     int y;
@@ -81,8 +81,9 @@ void    put_point(double i, double j)
         y = j - 3;
         while (y < j + 3)
         {
-            mlx_pixel_put(inf.m)
+            mlx_pixel_put(inf->mlx, inf->win_ptr, x, y, create_trgb(0, 0, 255, 0));
             y++;
         }
+        x++;
     }
 }

@@ -101,8 +101,7 @@ void check_point(t_inf *inf)
     di = dj / tan(deg_to_rad(inf->fov));
     printf("this is di %f\n", di);
     printf("rx =%f\nrj = %f\n", inf->pi + di, inf->pj + dj);
-    mlx_pixel_put(inf->mlx, inf->win_ptr, inf->pi + di, inf->pj + dj, create_trgb(0, 0, 255, 0));
-    put_player(inf, inf->pd, 1);
+    put_point(inf, inf->pi + di, inf->pj + dj);
     // exit(0);
 }
 
