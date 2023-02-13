@@ -70,6 +70,26 @@ double  deg_to_rad(double angle)
     return (angle);
 }
 
+void check_point(t_inf *inf)
+{
+    double di = 0;
+    double dj = 0;
+    
+    if ((fmod(inf->pj, 60)))
+        dj = (inf->pj - (fmod(inf->pj, 60))) * sign_of(sin(deg_to_rad(inf->fov)));
+    else
+    {
+        printf("went here\n");
+        dj = 60 *( sign_of(sin(deg_to_rad(inf->fov))));
+    }
+    printf("this is dj %f\n", dj);
+    di = dj / tan(deg_to_rad(inf->fov));
+    printf("this is di %f\n", di);
+    printf("rx =%f\nrj = %f\n", inf->pi + di, inf->pj + dj);
+    mlx_pixel_put(inf->mlx, inf->win_ptr, inf->pi + di, inf->pj + dj, create_trgb(0, 0, 255, 0));
+    put_player(inf, inf->pd, 1);
+    // exit(0);
+}
 int	key_hook(int keycode, t_inf *inf)
 {
     int t2;
@@ -84,8 +104,8 @@ int	key_hook(int keycode, t_inf *inf)
         inf->pi += (8 * cos(deg_to_rad(inf->fov)));
         inf->pj += (8 * sin(deg_to_rad(inf->fov)));
         printf("fov = %f\n", inf->fov);
-        printf("forward -> pi : %d\n", inf->pi - t1);
-        printf("forward -> pj : %d\n", inf->pj- t2);
+        printf("forward -> pi : %f\n", inf->pi - t1);
+        printf("forward -> pj : %f\n", inf->pj- t2);
         ray(inf, deg_to_rad(inf->fov), inf->pd, 1);
     }
     if (keycode == 125)
@@ -96,8 +116,8 @@ int	key_hook(int keycode, t_inf *inf)
         inf->pi -= ( 8 * cos(deg_to_rad(inf->fov)));
         inf->pj -= ( 8 * sin(deg_to_rad(inf->fov)));
         printf("fov = %f\n", inf->fov);
-        printf("backward -> pi : %d\n", inf->pi - t1);
-        printf("backward -> pj : %d\n", inf->pj- t2);
+        printf("backward -> pi : %f\n", inf->pi - t1);
+        printf("backward -> pj : %f\n", inf->pj- t2);
         ray(inf, deg_to_rad(inf->fov), inf->pd, 1);
     }
     if (keycode == 2)
@@ -105,6 +125,7 @@ int	key_hook(int keycode, t_inf *inf)
         ray(inf, deg_to_rad(inf->fov), inf->pd, 0);
         ray(inf, deg_to_rad(inf->fov + inf->step), inf->pd, 1);
         inf->fov += inf->step;
+        check_point(inf);
     }
     if (!keycode)
     {
@@ -127,12 +148,27 @@ void    put_rays(t_inf *inf, int m)
         }
 }
 
+int sign_of(double n)
+{
+    if (n >= 0)
+    {
+        printf("sin is positive\n");
+        return (1);
+    }
+    else
+    {
+        printf("sin is negative\n");
+        return (-1);
+    }
+}
+
+
 int main(int ac, char **av)
 {
     t_inf   inf;
     t_pd    pd;
 
-    inf.fov = 90;
+    inf.fov = 225;
     inf.step = 4;
     pd = m_function(ac, av);
     inf.pd = &pd;
@@ -141,8 +177,10 @@ int main(int ac, char **av)
     m_fill(&inf, pd);
     put_player(&inf, &pd, 1);
     put_lines(&inf, pd);
-    put_rays(&inf, 0);
-    printf("pi = %d pj = %d\n", inf.pi, inf.pj);
+    ray(&inf, deg_to_rad(inf.fov), inf.pd, 1);
+    // put_rays(&inf, 0);
+    printf("pi = %f pj = %f\n", inf.pi, inf.pj);
+    check_point(&inf);
     mlx_hook(inf.win_ptr, 2, 0, key_hook, &inf);
     mlx_loop(inf.mlx);
 }
