@@ -70,6 +70,20 @@ double  deg_to_rad(double angle)
     return (angle);
 }
 
+int sign_of(double n)
+{
+    if (n >= 0)
+    {
+        printf("sin is positive\n");
+        return (1);
+    }
+    else
+    {
+        printf("sin is negative\n");
+        return (-1);
+    }
+}
+
 void check_point(t_inf *inf)
 {
     double di = 0;
@@ -90,6 +104,7 @@ void check_point(t_inf *inf)
     put_player(inf, inf->pd, 1);
     // exit(0);
 }
+
 int	key_hook(int keycode, t_inf *inf)
 {
     int t2;
@@ -148,19 +163,6 @@ void    put_rays(t_inf *inf, int m)
         }
 }
 
-int sign_of(double n)
-{
-    if (n >= 0)
-    {
-        printf("sin is positive\n");
-        return (1);
-    }
-    else
-    {
-        printf("sin is negative\n");
-        return (-1);
-    }
-}
 
 
 int main(int ac, char **av)
