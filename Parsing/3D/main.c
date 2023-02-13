@@ -89,20 +89,25 @@ void check_point(t_inf *inf)
 {
     double di = 0;
     double dj = 0;
-    
+ 
     if ((fmod(inf->pj, 60)))
-        dj = (inf->pj - (fmod(inf->pj, 60))) * sign_of(sin(deg_to_rad(inf->fov)));
+    {
+        if (sign_of(sin(deg_to_rad(inf->fov))) == -1)
+            dj = fmod(inf->pj, 60) * (-1);
+        else
+            dj = (60 - fmod(inf->pj, 60));
+        printf("this is dj = %f\n", dj);
+        printf("this is inf->pj = %f\n", inf->pj);
+        printf("this is fmod = %f\n", fmod(inf->pj, 60));
+    }
     else
     {
-        printf("went here\n");
-        dj = 60 *( sign_of(sin(deg_to_rad(inf->fov))));
+        dj = 60 * sign_of(sin(deg_to_rad(inf->fov)));
     }
-    printf("this is dj %f\n", dj);
     di = dj / tan(deg_to_rad(inf->fov));
     printf("this is di %f\n", di);
     printf("rx =%f\nrj = %f\n", inf->pi + di, inf->pj + dj);
     put_point(inf, inf->pi + di, inf->pj + dj);
-    // exit(0);
 }
 
 int	key_hook(int keycode, t_inf *inf)
@@ -122,6 +127,7 @@ int	key_hook(int keycode, t_inf *inf)
         printf("forward -> pi : %f\n", inf->pi - t1);
         printf("forward -> pj : %f\n", inf->pj- t2);
         ray(inf, deg_to_rad(inf->fov), inf->pd, 1);
+        check_point(inf);
     }
     if (keycode == 125)
     {
@@ -134,6 +140,7 @@ int	key_hook(int keycode, t_inf *inf)
         printf("backward -> pi : %f\n", inf->pi - t1);
         printf("backward -> pj : %f\n", inf->pj- t2);
         ray(inf, deg_to_rad(inf->fov), inf->pd, 1);
+        check_point(inf);
     }
     if (keycode == 2)
     {
@@ -147,6 +154,7 @@ int	key_hook(int keycode, t_inf *inf)
         ray(inf, deg_to_rad(inf->fov), inf->pd, 0);
         ray(inf, deg_to_rad(inf->fov - inf->step), inf->pd, 1);
         inf->fov -= inf->step;
+        check_point(inf);
     }
 	return (0);
 }
