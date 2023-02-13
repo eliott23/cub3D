@@ -1,4 +1,5 @@
 #include "d.h"
+
 int check_obs(t_pd *pd, int i, int j)
 {
     if (pd->map[j / 60][i / 60] == '1')
@@ -162,8 +163,6 @@ void    put_rays(t_inf *inf, int m)
             i++;
         }
 }
-
-
 
 int main(int ac, char **av)
 {

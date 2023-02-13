@@ -69,6 +69,20 @@ void    put_player(t_inf *inf, t_pd *pd, int m)
     }
 }
 
-void    set_fov(t_inf *inf)
+void    put_point(double i, double j)
 {
+    int x;
+    int y;
+
+    x = i - 3;
+    y = j - 3;
+    while (x < i + 3)
+    {
+        y = j - 3;
+        while (y < j + 3)
+        {
+            mlx_pixel_put(inf.m)
+            y++;
+        }
+    }
 }
