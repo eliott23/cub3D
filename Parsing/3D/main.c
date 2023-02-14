@@ -122,15 +122,10 @@ void h_intersections(t_inf *inf)
             dj = fmod(inf->pj, 60) * (-1);
         else
             dj = (60 - fmod(inf->pj, 60));
-        // printf("this is dj = %f\n", dj);
-        // printf("this is inf->pj = %f\n", inf->pj);
-        // printf("this is fmod = %f\n", fmod(inf->pj, 60));
     }
     else
         dj = 60 * sign_of(sin(deg_to_rad(inf->fov)));
     di = dj / tan(deg_to_rad(inf->fov));
-    // printf("this is di beforehand %f\n", di);
-    // printf("this is the sin%d\n", sign_of(sin(deg_to_rad(inf->fov))));
     ti = (60 / tan(deg_to_rad(inf->fov))) * sign_of(sin(deg_to_rad(inf->fov)));
     tj = 60 * (sign_of(sin(deg_to_rad(inf->fov))));
     int i = 0;
@@ -138,16 +133,7 @@ void h_intersections(t_inf *inf)
     {
         dj += tj;
         di += ti;
-        printf("one\n");
     } 
-    // while (i < 4)
-    // {
-    //     put_point(inf, inf->pi + di, inf->pj + dj);
-    //     dj += tj;
-    //     di += ti;
-    //     i++;
-    // } 
-    // printf("%d\n", check_points(inf->pi + di, inf->pj + dj, inf->pd));
 }
 
 int	key_hook(int keycode, t_inf *inf)
@@ -216,7 +202,7 @@ int main(int ac, char **av)
     t_pd    pd;
 
     inf.fov = 225;
-    inf.step = 4;
+    inf.step = 5;
     pd = m_function(ac, av);
     printf("max width = %d\nmax_height = %d\n", pd.max_width, pd.max_height);
     inf.pd = &pd;
