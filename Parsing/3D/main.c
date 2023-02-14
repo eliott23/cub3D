@@ -1,17 +1,12 @@
 #include "d.h"
 
-int check_obs(t_pd *pd, int i, int j)
-{
-    if (pd->map[j / 60][i / 60] == '1')
-        return (1);
-    return (0);
-}
-
 int calc_cord(double angle, int l, int j, int i, t_pd *pd)
 {
     if (!pd->map[j / 60])
         return (0);
-    if (pd->map[j / 60][i / 60] == '1' || pd->map[j / 60][(i + 1) / 60] == '1')
+    // if (pd->map[j / 60][i / 60] == '1' || pd->map[j / 60][(i + 1) / 60] == '1')
+    //     return (0);
+    if (pd->map[j / 60][i / 60] == '1')
         return (0);
     return (1);
 }
@@ -74,21 +69,52 @@ double  deg_to_rad(double angle)
 int sign_of(double n)
 {
     if (n >= 0)
-    {
-        printf("sin is positive\n");
         return (1);
-    }
     else
-    {
-        printf("sin is negative\n");
         return (-1);
+}
+
+int check_points(double i, double j, t_pd *pd, t_inf *inf)
+{
+    double unit;
+    int    dir;
+    double r;
+    int y;
+
+    unit = 60;
+    int x = (int)(i / unit);
+    dir = sign_of(sin(deg_to_rad(inf->fov)));
+    if (dir < 0)
+        y = (int)(j / unit) - 1;
+    else
+        y = (int)(j / unit);
+    if (y < 0 || x < 0 || x > pd->max_width \
+
+    || y > pd->max_height || !pd->map[y] || !pd->map[y][x])
+    {
+        printf("went here\n");
+        return (0);
     }
+    if (i == unit || j == unit || pd->map[y][x] == '1')
+    {
+    printf(" int the collision :\
+    \ni = %f=%d\n j = %f=%d\n", i,x, j ,y);
+    printf("j / unit = %f\n", j / unit);
+        // printf("went here 2\n");
+    put_point(inf, i, j);
+        return (0);
+    }
+    printf("i = %f=%d\n j = %f=%d\n", i, x, j ,y);
+    put_point(inf, i, j);
+    return (1);
 }
 
 void h_intersections(t_inf *inf)
 {
     double di = 0;
     double dj = 0;
+    double ti = 0;
+    double tj = 0;
  
     if ((fmod(inf->pj, 60)))
     {
@@ -96,18 +122,32 @@ void h_intersections(t_inf *inf)
             dj = fmod(inf->pj, 60) * (-1);
         else
             dj = (60 - fmod(inf->pj, 60));
-        printf("this is dj = %f\n", dj);
-        printf("this is inf->pj = %f\n", inf->pj);
-        printf("this is fmod = %f\n", fmod(inf->pj, 60));
+        // printf("this is dj = %f\n", dj);
+        // printf("this is inf->pj = %f\n", inf->pj);
+        // printf("this is fmod = %f\n", fmod(inf->pj, 60));
     }
     else
-    {
         dj = 60 * sign_of(sin(deg_to_rad(inf->fov)));
-    }
     di = dj / tan(deg_to_rad(inf->fov));
-    printf("this is di %f\n", di);
-    printf("rx =%f\nrj = %f\n", inf->pi + di, inf->pj + dj);
-    put_point(inf, inf->pi + di, inf->pj + dj);
+    // printf("this is di beforehand %f\n", di);
+    // printf("this is the sin%d\n", sign_of(sin(deg_to_rad(inf->fov))));
+    ti = (60 / tan(deg_to_rad(inf->fov))) * sign_of(sin(deg_to_rad(inf->fov)));
+    tj = 60 * (sign_of(sin(deg_to_rad(inf->fov))));
+    int i = 0;
+    while (check_points(inf->pi + di, inf->pj + dj, inf->pd, inf))
+    {
+        dj += tj;
+        di += ti;
+        printf("one\n");
+    } 
+    // while (i < 4)
+    // {
+    //     put_point(inf, inf->pi + di, inf->pj + dj);
+    //     dj += tj;
+    //     di += ti;
+    //     i++;
+    // } 
+    // printf("%d\n", check_points(inf->pi + di, inf->pj + dj, inf->pd));
 }
 
 int	key_hook(int keycode, t_inf *inf)
@@ -115,7 +155,6 @@ int	key_hook(int keycode, t_inf *inf)
     int t2;
     int t1;
 
-    printf("keycode %d\n", keycode);
     if (keycode == 126)
     {
         t1 = inf->pi;
@@ -186,7 +225,6 @@ int main(int ac, char **av)
     put_player(&inf, &pd, 1);
     put_lines(&inf, pd);
     ray(&inf, deg_to_rad(inf.fov), inf.pd, 1);
-    // put_rays(&inf, 0);
     printf("pi = %f pj = %f\n", inf.pi, inf.pj);
     h_intersections(&inf);
     mlx_hook(inf.win_ptr, 2, 0, key_hook, &inf);
