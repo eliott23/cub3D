@@ -89,7 +89,7 @@ int check_points(double i, double j, t_pd *pd, t_inf *inf)
     else
         y = (int)(round(j) / unit);
     printf("i = %f=%d\n j = %f=%d\n", i, x, j ,y);
-    if (y < 0 || x < 0 || x > pd->max_width \
+    if (y < 0 || x < 0 || x > ft_len(pd->map[y]) \
 
     || y > pd->max_height)
     {
