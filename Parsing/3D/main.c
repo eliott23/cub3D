@@ -74,24 +74,24 @@ int sign_of(double n)
         return (-1);
 }
 
-int check_points(double i, double j, t_pd *pd, t_inf *inf)
+int check_points_h(double i, double j, t_pd *pd, t_inf *inf)
 {
     double unit;
     int    dir;
     double r;
     int y;
+    int x;
 
     unit = 60;
-    int x = (int)((round(i) / unit));
+    x = (int)((round(i) / unit));
     dir = sign_of(sin(deg_to_rad(inf->fov)));
     if (dir < 0)
         y = (int)(round(j) / unit) - 1;
     else
         y = (int)(round(j) / unit);
-    printf("i = %f=%d\n j = %f=%d\n", i, x, j ,y);
-    if (y < 0 || x < 0 || x > ft_len(pd->map[y]) \
-
-    || y > pd->max_height)
+    // printf("i = %f=%d\n j = %f=%d\n", i, x, j ,y);
+    if (y < 0 || x < 0 || y > pd->max_height ||\
+    x > ft_len(pd->map[y]) )
     {
         printf("i = %f=%d\n j = %f=%d\n", i, x, j ,y);
         printf("went here\n");
@@ -99,14 +99,84 @@ int check_points(double i, double j, t_pd *pd, t_inf *inf)
     }
     if (i == unit || j == unit || pd->map[y][x] == '1' || !pd->map[y][x])
     {
-    printf(" int the collision :\
-    \ni = %f=%d\n j = %f=%d\n", i,x, j ,y);
-    printf("j / unit = %f\n", j / unit);
-        printf("went here 2\n");
+    // printf(" int the collision :\
+    // \ni = %f=%d\n j = %f=%d\n", i,x, j ,y);
+    // printf("j / unit = %f\n", j / unit);
+    //     printf("went here 2\n");
     put_point(inf, i, j);
         return (0);
     }
+    printf("i = %f=%d\n j = %f=%d\n", i,x, j ,y);
+    printf("j / unit = %f\n", j / unit);
+        printf("went here 2\n");
     return (1);
+}
+
+int check_points_v(double i, double j, t_pd *pd, t_inf *inf)
+{
+    double unit;
+    int    dir;
+    double r;
+    int x;
+
+    unit = 60;
+    int y = (int)((round(j) / unit));
+    dir = sign_of(cos(deg_to_rad(inf->fov)));
+    if (dir < 0)
+        x = (int)(round(i) / unit) - 1;
+    else
+        x = (int)(round(i) / unit);
+    // printf("i = %f=%d\n j = %f=%d\n", i, x, j ,y);
+    if (y < 0 || x < 0 || y > pd->max_height ||\
+    x > ft_len(pd->map[y]) )
+    {
+        printf("i = %f=%d\n j = %f=%d\n", i, x, j ,y);
+        printf("went here\n");
+        return (0);
+    }
+    if (i == unit || j == unit || pd->map[y][x] == '1' || !pd->map[y][x])
+    {
+    // printf(" int the collision :\
+    // \ni = %f=%d\n j = %f=%d\n", i,x, j ,y);
+    // printf("j / unit = %f\n", j / unit);
+    //     printf("went here 2\n");
+    put_point(inf, i, j);
+        return (0);
+    }
+    printf("i = %f=%d\n j = %f=%d\n", i,x, j ,y);
+    printf("j / unit = %f\n", j / unit);
+        printf("went here 2\n");
+    return (1);
+}
+
+void v_intersections(t_inf *inf)
+{
+    double di = 0;
+    double dj = 0;
+    double ti = 0;
+    double tj = 0;
+ 
+    if ((fmod(inf->pj, 60)))
+    {
+        if (sign_of(cos(deg_to_rad(inf->fov))) == -1)
+            di = fmod(inf->pi, 60) * (-1);
+        else
+            di = (60 - fmod(inf->pi, 60));
+    }
+    else
+        di = 60 * sign_of(cos(deg_to_rad(inf->fov)));
+
+    dj = di * tan(deg_to_rad(inf->fov));
+
+    tj = (60 * tan(deg_to_rad(inf->fov))) * sign_of(cos(deg_to_rad(inf->fov)));
+    ti = 60 * (sign_of(cos(deg_to_rad(inf->fov))));
+
+    // int i = 0;
+    while (check_points_v(inf->pi + di, inf->pj + dj, inf->pd, inf))
+    {
+        dj += tj;
+        di += ti;
+    } 
 }
 
 void h_intersections(t_inf *inf)
@@ -125,11 +195,13 @@ void h_intersections(t_inf *inf)
     }
     else
         dj = 60 * sign_of(sin(deg_to_rad(inf->fov)));
+
     di = dj / tan(deg_to_rad(inf->fov));
+
     ti = (60 / tan(deg_to_rad(inf->fov))) * sign_of(sin(deg_to_rad(inf->fov)));
     tj = 60 * (sign_of(sin(deg_to_rad(inf->fov))));
-    int i = 0;
-    while (check_points(inf->pi + di, inf->pj + dj, inf->pd, inf))
+
+    while (check_points_h(inf->pi + di, inf->pj + dj, inf->pd, inf))
     {
         dj += tj;
         di += ti;
@@ -153,6 +225,7 @@ int	key_hook(int keycode, t_inf *inf)
         printf("forward -> pj : %f\n", inf->pj- t2);
         ray(inf, deg_to_rad(inf->fov), inf->pd, 1);
         h_intersections(inf);
+        v_intersections(inf);
     }
     if (keycode == 125)
     {
@@ -166,6 +239,7 @@ int	key_hook(int keycode, t_inf *inf)
         printf("backward -> pj : %f\n", inf->pj- t2);
         ray(inf, deg_to_rad(inf->fov), inf->pd, 1);
         h_intersections(inf);
+        v_intersections(inf);
     }
     if (keycode == 2)
     {
@@ -173,6 +247,7 @@ int	key_hook(int keycode, t_inf *inf)
         ray(inf, deg_to_rad(inf->fov + inf->step), inf->pd, 1);
         inf->fov += inf->step;
         h_intersections(inf);
+        v_intersections(inf);
     }
     if (!keycode)
     {
@@ -180,6 +255,7 @@ int	key_hook(int keycode, t_inf *inf)
         ray(inf, deg_to_rad(inf->fov - inf->step), inf->pd, 1);
         inf->fov -= inf->step;
         h_intersections(inf);
+        v_intersections(inf);
     }
 	return (0);
 }
@@ -212,7 +288,6 @@ int main(int ac, char **av)
     put_player(&inf, &pd, 1);
     put_lines(&inf, pd);
     ray(&inf, deg_to_rad(inf.fov), inf.pd, 1);
-    h_intersections(&inf);
     mlx_hook(inf.win_ptr, 2, 0, key_hook, &inf);
     mlx_loop(inf.mlx);
 }
