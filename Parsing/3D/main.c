@@ -85,7 +85,7 @@ int sign_of(double n)
     }
 }
 
-void check_point(t_inf *inf)
+void h_intersections(t_inf *inf)
 {
     double di = 0;
     double dj = 0;
@@ -127,7 +127,7 @@ int	key_hook(int keycode, t_inf *inf)
         printf("forward -> pi : %f\n", inf->pi - t1);
         printf("forward -> pj : %f\n", inf->pj- t2);
         ray(inf, deg_to_rad(inf->fov), inf->pd, 1);
-        check_point(inf);
+        h_intersections(inf);
     }
     if (keycode == 125)
     {
@@ -140,21 +140,21 @@ int	key_hook(int keycode, t_inf *inf)
         printf("backward -> pi : %f\n", inf->pi - t1);
         printf("backward -> pj : %f\n", inf->pj- t2);
         ray(inf, deg_to_rad(inf->fov), inf->pd, 1);
-        check_point(inf);
+        h_intersections(inf);
     }
     if (keycode == 2)
     {
         ray(inf, deg_to_rad(inf->fov), inf->pd, 0);
         ray(inf, deg_to_rad(inf->fov + inf->step), inf->pd, 1);
         inf->fov += inf->step;
-        check_point(inf);
+        h_intersections(inf);
     }
     if (!keycode)
     {
         ray(inf, deg_to_rad(inf->fov), inf->pd, 0);
         ray(inf, deg_to_rad(inf->fov - inf->step), inf->pd, 1);
         inf->fov -= inf->step;
-        check_point(inf);
+        h_intersections(inf);
     }
 	return (0);
 }
@@ -188,7 +188,7 @@ int main(int ac, char **av)
     ray(&inf, deg_to_rad(inf.fov), inf.pd, 1);
     // put_rays(&inf, 0);
     printf("pi = %f pj = %f\n", inf.pi, inf.pj);
-    check_point(&inf);
+    h_intersections(&inf);
     mlx_hook(inf.win_ptr, 2, 0, key_hook, &inf);
     mlx_loop(inf.mlx);
 }
