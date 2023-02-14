@@ -82,30 +82,30 @@ int check_points(double i, double j, t_pd *pd, t_inf *inf)
     int y;
 
     unit = 60;
-    int x = (int)(i / unit);
+    int x = (int)((round(i) / unit));
     dir = sign_of(sin(deg_to_rad(inf->fov)));
     if (dir < 0)
-        y = (int)(j / unit) - 1;
+        y = (int)(round(j) / unit) - 1;
     else
-        y = (int)(j / unit);
+        y = (int)(round(j) / unit);
+    printf("i = %f=%d\n j = %f=%d\n", i, x, j ,y);
     if (y < 0 || x < 0 || x > pd->max_width \
 
-    || y > pd->max_height || !pd->map[y] || !pd->map[y][x])
+    || y > pd->max_height)
     {
+        printf("i = %f=%d\n j = %f=%d\n", i, x, j ,y);
         printf("went here\n");
         return (0);
     }
-    if (i == unit || j == unit || pd->map[y][x] == '1')
+    if (i == unit || j == unit || pd->map[y][x] == '1' || !pd->map[y][x])
     {
     printf(" int the collision :\
     \ni = %f=%d\n j = %f=%d\n", i,x, j ,y);
     printf("j / unit = %f\n", j / unit);
-        // printf("went here 2\n");
+        printf("went here 2\n");
     put_point(inf, i, j);
         return (0);
     }
-    printf("i = %f=%d\n j = %f=%d\n", i, x, j ,y);
-    put_point(inf, i, j);
     return (1);
 }
 
@@ -218,6 +218,7 @@ int main(int ac, char **av)
     inf.fov = 225;
     inf.step = 4;
     pd = m_function(ac, av);
+    printf("max width = %d\nmax_height = %d\n", pd.max_width, pd.max_height);
     inf.pd = &pd;
     inf.mlx = mlx_init();
     inf.win_ptr = mlx_new_window(inf.mlx, pd.max_width * 60, pd.max_height * 60, "3D");
@@ -225,7 +226,6 @@ int main(int ac, char **av)
     put_player(&inf, &pd, 1);
     put_lines(&inf, pd);
     ray(&inf, deg_to_rad(inf.fov), inf.pd, 1);
-    printf("pi = %f pj = %f\n", inf.pi, inf.pj);
     h_intersections(&inf);
     mlx_hook(inf.win_ptr, 2, 0, key_hook, &inf);
     mlx_loop(inf.mlx);
