@@ -347,7 +347,7 @@ int main(int ac, char **av)
     inf.mlx = mlx_init();
     inf.win_ptr = mlx_new_window(inf.mlx, pd.max_width * 60, pd.max_height * 60, "3D");
     m_fill(&inf, pd);
-    // put_player(&inf, &pd, 1);
+    put_player(&inf, &pd, 1);
     put_lines(&inf, pd);
     h_intersections(&inf);
     v_intersections(&inf);
