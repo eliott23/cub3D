@@ -17,6 +17,13 @@ typedef struct inf{
     double  fov; 
     t_pd    *pd;
     int     step;
+    double  h_i;
+    double  h_j;
+    double  v_i;
+    double  v_j;
+    double  col_dist;
+    double  o_col_dist;
+    int     flag;
 }   t_inf;
 void    put_point(t_inf *inf, double i, double j, int m);
 void    put_player(t_inf *inf, t_pd *pd, int m);

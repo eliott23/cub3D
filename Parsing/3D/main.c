@@ -16,8 +16,14 @@ void    ray(t_inf *inf, double angle, t_pd *pd, int m)
     int l = 0;
     int t = inf->pi;
     int t2 = inf->pj;
+    int lim;
 
-    while (calc_cord(angle, l, t2, t, pd))
+    // printf("this")
+    if (m)
+        lim = (int)inf->col_dist;
+    else
+        lim = (int)inf->o_col_dist;
+    while (l < lim)
     {
         t =  inf->pi + (l * cos(angle));
         t2 = inf->pj + (l * sin(angle));
@@ -85,10 +91,7 @@ int check_points_h(double i, double j, t_pd *pd, t_inf *inf)
     unit = 60;
     x = (int)((round(i) / unit));
     if (!fmod(round(i), 60) && sign_of(cos(deg_to_rad(inf->fov))) == -1)
-    {
         x -= 1;
-        printf("yep\n");
-    }
     dir = sign_of(sin(deg_to_rad(inf->fov)));
     if (dir < 0)
         y = (int)(round(j) / unit) - 1;
@@ -100,6 +103,7 @@ int check_points_h(double i, double j, t_pd *pd, t_inf *inf)
     {
         // printf("i = %f=%d\n j = %f=%d\n", i, x, j ,y);
         // printf("went here\n");
+        inf->flag = -2; //check description in the check_point_v() function;
         return (0);
     }
     if (i == unit || j == unit || pd->map[y][x] == '1' || !pd->map[y][x])
@@ -109,11 +113,10 @@ int check_points_h(double i, double j, t_pd *pd, t_inf *inf)
     // printf("j / unit = %f\n", j / unit);
     //     printf("went here 2\n");
         put_point(inf, i, j, 1);
+        inf->h_i = i;
+        inf->h_j = j;
         return (0);
     }
-    printf("i = %f=%d\n j = %f=%d\n", i,x, j ,y);
-    printf("j / unit = %f\n", j / unit);
-        printf("went here 2\n");
     return (1);
 }
 
@@ -142,6 +145,9 @@ int check_points_v(double i, double j, t_pd *pd, t_inf *inf)
     {
         // printf("i = %f=%d\n j = %f=%d\n", i, x, j ,y);
         // printf("went here\n");
+        inf->flag = -1; //kandiro hadafor flaging a point that is outside the map\
+                        so that we could ignore the distance of this collision later (-1 for vertical and -2 for horiizontal);
+                        //then ofc reset the flag to 0 after every time we check it;
         return (0);
     }
     if (i == unit || j == unit || pd->map[y][x] == '1' || !pd->map[y][x])
@@ -151,6 +157,8 @@ int check_points_v(double i, double j, t_pd *pd, t_inf *inf)
     // printf("j / unit = %f\n", j / unit);
     //     printf("went here 2\n");
         put_point(inf, i, j, 2);
+        inf->v_i = i;
+        inf->v_j = j;
         return (0);
     }
     // printf("i = %f=%d\n j = %f=%d\n", i,x, j ,y);
@@ -181,7 +189,6 @@ void v_intersections(t_inf *inf)
     tj = (60 * tan(deg_to_rad(inf->fov))) * sign_of(cos(deg_to_rad(inf->fov)));
     ti = 60 * (sign_of(cos(deg_to_rad(inf->fov))));
 
-    // int i = 0;
     while (check_points_v(inf->pi + di, inf->pj + dj, inf->pd, inf))
     {
         dj += tj;
@@ -218,6 +225,47 @@ void h_intersections(t_inf *inf)
     } 
 }
 
+double  min(double a, double b)
+{
+    if (a < b)
+        return (a);
+    return (b);
+}
+
+void    calc_col_dis(t_inf *inf)
+{
+    double  d_h;
+    double  d_v;
+
+    if (inf->flag == -2 || inf->flag == -1)
+    {
+        if (inf->flag == -2)
+        {
+            inf->col_dist = ((inf->v_i - inf->pi) * (inf->v_i - inf->pi)) + ((inf->v_j - inf->pj) * (inf->v_j - inf->pj));
+            inf->col_dist = sqrt(inf->col_dist);
+            inf->flag = 0;
+        }
+        else
+        {
+            inf->col_dist = ((inf->h_i - inf->pi) * (inf->h_i - inf->pi)) + ((inf->h_j - inf->pj) * (inf->h_j - inf->pj));
+            inf->col_dist = sqrt(inf->col_dist);
+            inf->flag = 0;
+        }
+    }
+    else
+    {
+        d_h = ((inf->h_i - inf->pi) * (inf->h_i - inf->pi)) + ((inf->h_j - inf->pj) * (inf->h_j - inf->pj));
+        // printf("d_h before sqrt= %f\n", d_h);
+        d_h = sqrt(d_h);
+        // printf("d_h after sqrt = %f\n", d_h);
+        d_v = ((inf->v_i - inf->pi) * (inf->v_i - inf->pi)) + ((inf->v_j - inf->pj) * (inf->v_j - inf->pj));
+        // printf("d_v before sqrt= %f\n", d_v);
+        d_v = sqrt(d_v);
+        // printf("d_v after sqrt = %f\n", d_v);
+        inf->col_dist = min(d_h, d_v);
+    }
+}
+
 int	key_hook(int keycode, t_inf *inf)
 {
     int t2;
@@ -230,9 +278,12 @@ int	key_hook(int keycode, t_inf *inf)
         ray(inf, deg_to_rad(inf->fov), inf->pd, 0);
         inf->pi += (8 * cos(deg_to_rad(inf->fov)));
         inf->pj += (8 * sin(deg_to_rad(inf->fov)));
-        ray(inf, deg_to_rad(inf->fov), inf->pd, 1);
         h_intersections(inf);
         v_intersections(inf);
+        calc_col_dis(inf);
+        ray(inf, deg_to_rad(inf->fov), inf->pd, 1);
+        inf->o_col_dist = inf->col_dist;
+
     }
     if (keycode == 125)
     {
@@ -241,25 +292,31 @@ int	key_hook(int keycode, t_inf *inf)
         ray(inf, deg_to_rad(inf->fov), inf->pd, 0);
         inf->pi -= ( 8 * cos(deg_to_rad(inf->fov)));
         inf->pj -= ( 8 * sin(deg_to_rad(inf->fov)));
-        ray(inf, deg_to_rad(inf->fov), inf->pd, 1);
         h_intersections(inf);
         v_intersections(inf);
+        calc_col_dis(inf);
+        ray(inf, deg_to_rad(inf->fov), inf->pd, 1);
+        inf->o_col_dist = inf->col_dist;
     }
     if (keycode == 2)
     {
         ray(inf, deg_to_rad(inf->fov), inf->pd, 0);
-        ray(inf, deg_to_rad(inf->fov + inf->step), inf->pd, 1);
         inf->fov += inf->step;
         h_intersections(inf);
         v_intersections(inf);
+        calc_col_dis(inf);
+        ray(inf, deg_to_rad(inf->fov), inf->pd, 1);
+        inf->o_col_dist = inf->col_dist;
     }
     if (!keycode)
     {
         ray(inf, deg_to_rad(inf->fov), inf->pd, 0);
-        ray(inf, deg_to_rad(inf->fov - inf->step), inf->pd, 1);
         inf->fov -= inf->step;
         h_intersections(inf);
         v_intersections(inf);
+        calc_col_dis(inf);
+        ray(inf, deg_to_rad(inf->fov), inf->pd, 1);
+        inf->o_col_dist = inf->col_dist;
     }
 	return (0);
 }
@@ -283,6 +340,7 @@ int main(int ac, char **av)
 
     inf.fov = 135;
     inf.step = 3;
+    inf.flag = 0;
     pd = m_function(ac, av);
     printf("max width = %d\nmax_height = %d\n", pd.max_width, pd.max_height);
     inf.pd = &pd;
@@ -291,9 +349,11 @@ int main(int ac, char **av)
     m_fill(&inf, pd);
     put_player(&inf, &pd, 1);
     put_lines(&inf, pd);
-    ray(&inf, deg_to_rad(inf.fov), inf.pd, 1);
     h_intersections(&inf);
     v_intersections(&inf);
+    calc_col_dis(&inf);
+    ray(&inf, deg_to_rad(inf.fov), inf.pd, 1);
+    inf.o_col_dist = inf.col_dist;
     mlx_hook(inf.win_ptr, 2, 0, key_hook, &inf);
     mlx_loop(inf.mlx);
 }
