@@ -126,6 +126,11 @@ int check_points_v(double i, double j, t_pd *pd, t_inf *inf)
 
     unit = 60;
     int y = (int)((round(j) / unit));
+//    if (!fmod(round(j), 60) && sign_of(sin(deg_to_rad(inf->fov))) == -1)
+//     {
+//         y -= 1;
+//         printf("yep\n");
+//     }
     dir = sign_of(cos(deg_to_rad(inf->fov)));
     if (dir < 0)
         x = (int)(round(i) / unit) - 1;
@@ -276,7 +281,7 @@ int main(int ac, char **av)
     t_inf   inf;
     t_pd    pd;
 
-    inf.fov = 225;
+    inf.fov = 135;
     inf.step = 3;
     pd = m_function(ac, av);
     printf("max width = %d\nmax_height = %d\n", pd.max_width, pd.max_height);
