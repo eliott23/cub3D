@@ -84,6 +84,11 @@ int check_points_h(double i, double j, t_pd *pd, t_inf *inf)
 
     unit = 60;
     x = (int)((round(i) / unit));
+    if (!fmod(round(i), 60) && sign_of(cos(deg_to_rad(inf->fov))) == -1)
+    {
+        x -= 1;
+        printf("yep\n");
+    }
     dir = sign_of(sin(deg_to_rad(inf->fov)));
     if (dir < 0)
         y = (int)(round(j) / unit) - 1;
@@ -93,8 +98,8 @@ int check_points_h(double i, double j, t_pd *pd, t_inf *inf)
     if (y < 0 || x < 0 || y > pd->max_height ||\
     x > ft_len(pd->map[y]) )
     {
-        printf("i = %f=%d\n j = %f=%d\n", i, x, j ,y);
-        printf("went here\n");
+        // printf("i = %f=%d\n j = %f=%d\n", i, x, j ,y);
+        // printf("went here\n");
         return (0);
     }
     if (i == unit || j == unit || pd->map[y][x] == '1' || !pd->map[y][x])
@@ -103,7 +108,7 @@ int check_points_h(double i, double j, t_pd *pd, t_inf *inf)
     // \ni = %f=%d\n j = %f=%d\n", i,x, j ,y);
     // printf("j / unit = %f\n", j / unit);
     //     printf("went here 2\n");
-    put_point(inf, i, j);
+        put_point(inf, i, j, 1);
         return (0);
     }
     printf("i = %f=%d\n j = %f=%d\n", i,x, j ,y);
@@ -130,8 +135,8 @@ int check_points_v(double i, double j, t_pd *pd, t_inf *inf)
     if (y < 0 || x < 0 || y > pd->max_height ||\
     x > ft_len(pd->map[y]) )
     {
-        printf("i = %f=%d\n j = %f=%d\n", i, x, j ,y);
-        printf("went here\n");
+        // printf("i = %f=%d\n j = %f=%d\n", i, x, j ,y);
+        // printf("went here\n");
         return (0);
     }
     if (i == unit || j == unit || pd->map[y][x] == '1' || !pd->map[y][x])
@@ -140,12 +145,12 @@ int check_points_v(double i, double j, t_pd *pd, t_inf *inf)
     // \ni = %f=%d\n j = %f=%d\n", i,x, j ,y);
     // printf("j / unit = %f\n", j / unit);
     //     printf("went here 2\n");
-    put_point(inf, i, j);
+        put_point(inf, i, j, 2);
         return (0);
     }
-    printf("i = %f=%d\n j = %f=%d\n", i,x, j ,y);
-    printf("j / unit = %f\n", j / unit);
-        printf("went here 2\n");
+    // printf("i = %f=%d\n j = %f=%d\n", i,x, j ,y);
+    // printf("j / unit = %f\n", j / unit);
+    //     printf("went here 2\n");
     return (1);
 }
 
@@ -220,9 +225,6 @@ int	key_hook(int keycode, t_inf *inf)
         ray(inf, deg_to_rad(inf->fov), inf->pd, 0);
         inf->pi += (8 * cos(deg_to_rad(inf->fov)));
         inf->pj += (8 * sin(deg_to_rad(inf->fov)));
-        printf("fov = %f\n", inf->fov);
-        printf("forward -> pi : %f\n", inf->pi - t1);
-        printf("forward -> pj : %f\n", inf->pj- t2);
         ray(inf, deg_to_rad(inf->fov), inf->pd, 1);
         h_intersections(inf);
         v_intersections(inf);
@@ -234,9 +236,6 @@ int	key_hook(int keycode, t_inf *inf)
         ray(inf, deg_to_rad(inf->fov), inf->pd, 0);
         inf->pi -= ( 8 * cos(deg_to_rad(inf->fov)));
         inf->pj -= ( 8 * sin(deg_to_rad(inf->fov)));
-        printf("fov = %f\n", inf->fov);
-        printf("backward -> pi : %f\n", inf->pi - t1);
-        printf("backward -> pj : %f\n", inf->pj- t2);
         ray(inf, deg_to_rad(inf->fov), inf->pd, 1);
         h_intersections(inf);
         v_intersections(inf);
@@ -278,7 +277,7 @@ int main(int ac, char **av)
     t_pd    pd;
 
     inf.fov = 225;
-    inf.step = 5;
+    inf.step = 3;
     pd = m_function(ac, av);
     printf("max width = %d\nmax_height = %d\n", pd.max_width, pd.max_height);
     inf.pd = &pd;
@@ -288,6 +287,8 @@ int main(int ac, char **av)
     put_player(&inf, &pd, 1);
     put_lines(&inf, pd);
     ray(&inf, deg_to_rad(inf.fov), inf.pd, 1);
+    h_intersections(&inf);
+    v_intersections(&inf);
     mlx_hook(inf.win_ptr, 2, 0, key_hook, &inf);
     mlx_loop(inf.mlx);
 }

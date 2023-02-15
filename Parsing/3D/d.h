@@ -18,7 +18,7 @@ typedef struct inf{
     t_pd    *pd;
     int     step;
 }   t_inf;
-void    put_point(t_inf *inf, double i, double j);
+void    put_point(t_inf *inf, double i, double j, int m);
 void    put_player(t_inf *inf, t_pd *pd, int m);
 int	create_trgb(int t, int r, int g, int b);
 void    put_lines(t_inf *inf, t_pd pd);
