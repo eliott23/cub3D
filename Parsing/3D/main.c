@@ -1,12 +1,24 @@
 #include "d.h"
 
+void	my_mlx_pixel_put(t_inf *inf, int x, int y, int color)
+{
+	int		offset;
+	char	*pixel;
+	//to get the position of the current pixel
+	//bpp is devided by 8 cus its already multiplied by 8 (a pixel is coded on 4 char, those chars worth 8 bits each)
+	//(X position * 4 + 4 * Line size * Y position)
+	offset = y * inf->img.size_line + x * (inf->img.bpp / 8);
+	pixel = inf->img.adrr + offset;
+	*(unsigned int *)pixel = color;
+}
+
 int calc_cord(double angle, int l, int j, int i, t_pd *pd)
 {
-    if (!pd->map[j / 60])
+    if (!pd->map[j / tile_size])
         return (0);
-    // if (pd->map[j / 60][i / 60] == '1' || pd->map[j / 60][(i + 1) / 60] == '1')
+    // if (pd->map[j / tile_size][i / tile_size] == '1' || pd->map[j / tile_size][(i + 1) / tile_size] == '1')
     //     return (0);
-    if (pd->map[j / 60][i / 60] == '1')
+    if (pd->map[j / tile_size][i / tile_size] == '1')
         return (0);
     return (1);
 }
@@ -20,19 +32,29 @@ void    ray(t_inf *inf, double angle, t_pd *pd, int m)
 
     // printf("this")
     if (m)
+    {
         lim = (int)inf->col_dist;
+        printf("new col = %d\n", (int)inf->col_dist);
+    }
     else
+    {
         lim = (int)inf->o_col_dist;
+        printf("old col = %d\n", (int)inf->o_col_dist);
+    }
     while (l < lim)
     {
         t =  inf->pi + (l * cos(angle));
         t2 = inf->pj + (l * sin(angle));
+        printf("t = %d t2 = %d\n", t, t2);
+        // pretoction from segfault
+        if (t < 0 || t >= pd->max_width * tile_size || t2 >= pd->max_height * tile_size || t2 < 0)
+            break ;
         if (m)
-            mlx_pixel_put(inf->mlx, inf->win_ptr, t, t2, create_trgb(50, 255, 0, 0));
-        else if ((t % 60) && (t2 % 60)) 
-            mlx_pixel_put(inf->mlx, inf->win_ptr, t, t2, create_trgb(0, 192, 192, 192));
+            my_mlx_pixel_put(inf, t, t2, create_trgb(50, 255, 0, 0));
+        else if ((t % tile_size) && (t2 % tile_size)) 
+            my_mlx_pixel_put(inf, t, t2, create_trgb(0, 192, 192, 192));
         else
-            mlx_pixel_put(inf->mlx, inf->win_ptr, t, t2, create_trgb(100, 32, 32, 32));
+            my_mlx_pixel_put(inf, t, t2, create_trgb(100, 32, 32, 32));
         l++;
     }
 }
@@ -49,17 +71,17 @@ void    m_fill(t_inf *inf, t_pd pd)
 
     i = 0;
     j = 0;
-    while (j < pd.max_height * 60)
+    while (j < pd.max_height * tile_size)
     {
         i = 0;
-        while (i < pd.max_width * 60)
+        while (i < pd.max_width * tile_size)
         {
-            if (!pd.map[j / 60][i / 60])
+            if (!pd.map[j / tile_size][i / tile_size])
                 break;
-            if (pd.map[j / 60][i / 60] == '0' || pd.map[j / 60][i / 60] == 'N') //check later;
-                mlx_pixel_put(inf->mlx, inf->win_ptr, i, j, create_trgb(0, 192, 192, 192));
+            if (pd.map[j / tile_size][i / tile_size] == '0' || pd.map[j / tile_size][i / tile_size] == 'N') //check later;
+                my_mlx_pixel_put(inf, i, j, create_trgb(0, 192, 192, 192));
             else
-                mlx_pixel_put(inf->mlx, inf->win_ptr, i, j, create_trgb(0, 32, 32, 32));
+                my_mlx_pixel_put(inf, i, j, create_trgb(0, 32, 32, 32));
             i++;
         }
         j++;
@@ -88,9 +110,9 @@ int check_points_h(double i, double j, t_pd *pd, t_inf *inf)
     int y;
     int x;
 
-    unit = 60;
+    unit = tile_size;
     x = (int)((round(i) / unit));
-    if (!fmod(round(i), 60) && sign_of(cos(deg_to_rad(inf->fov))) == -1)
+    if (!fmod(round(i), tile_size) && sign_of(cos(deg_to_rad(inf->fov))) == -1)
         x -= 1;
     dir = sign_of(sin(deg_to_rad(inf->fov)));
     if (dir < 0)
@@ -111,7 +133,7 @@ int check_points_h(double i, double j, t_pd *pd, t_inf *inf)
     // printf(" int the collision :\
     // \ni = %f=%d\n j = %f=%d\n", i,x, j ,y);
     // printf("j / unit = %f\n", j / unit);
-    //     printf("went here 2\n");
+        printf("went here h\n");
         put_point(inf, i, j, 1);
         inf->h_i = i;
         inf->h_j = j;
@@ -127,9 +149,9 @@ int check_points_v(double i, double j, t_pd *pd, t_inf *inf)
     double r;
     int x;
 
-    unit = 60;
+    unit = tile_size;
     int y = (int)((round(j) / unit));
-//    if (!fmod(round(j), 60) && sign_of(sin(deg_to_rad(inf->fov))) == -1)
+//    if (!fmod(round(j), tile_size) && sign_of(sin(deg_to_rad(inf->fov))) == -1)
 //     {
 //         y -= 1;
 //         printf("yep\n");
@@ -155,7 +177,7 @@ int check_points_v(double i, double j, t_pd *pd, t_inf *inf)
     // printf(" int the collision :\
     // \ni = %f=%d\n j = %f=%d\n", i,x, j ,y);
     // printf("j / unit = %f\n", j / unit);
-    //     printf("went here 2\n");
+        printf("went here v\n");
         put_point(inf, i, j, 2);
         inf->v_i = i;
         inf->v_j = j;
@@ -174,20 +196,20 @@ void v_intersections(t_inf *inf)
     double ti = 0;
     double tj = 0;
  
-    if ((fmod(inf->pj, 60)))
+    if ((fmod(inf->pj, tile_size)))
     {
         if (sign_of(cos(deg_to_rad(inf->fov))) == -1)
-            di = fmod(inf->pi, 60) * (-1);
+            di = fmod(inf->pi, tile_size) * (-1);
         else
-            di = (60 - fmod(inf->pi, 60));
+            di = (tile_size - fmod(inf->pi, tile_size));
     }
     else
-        di = 60 * sign_of(cos(deg_to_rad(inf->fov)));
+        di = tile_size * sign_of(cos(deg_to_rad(inf->fov)));
 
     dj = di * tan(deg_to_rad(inf->fov));
 
-    tj = (60 * tan(deg_to_rad(inf->fov))) * sign_of(cos(deg_to_rad(inf->fov)));
-    ti = 60 * (sign_of(cos(deg_to_rad(inf->fov))));
+    tj = (tile_size * tan(deg_to_rad(inf->fov))) * sign_of(cos(deg_to_rad(inf->fov)));
+    ti = tile_size * (sign_of(cos(deg_to_rad(inf->fov))));
 
     while (check_points_v(inf->pi + di, inf->pj + dj, inf->pd, inf))
     {
@@ -203,20 +225,20 @@ void h_intersections(t_inf *inf)
     double ti = 0;
     double tj = 0;
  
-    if ((fmod(inf->pj, 60)))
+    if ((fmod(inf->pj, tile_size)))
     {
         if (sign_of(sin(deg_to_rad(inf->fov))) == -1)
-            dj = fmod(inf->pj, 60) * (-1);
+            dj = fmod(inf->pj, tile_size) * (-1);
         else
-            dj = (60 - fmod(inf->pj, 60));
+            dj = (tile_size - fmod(inf->pj, tile_size));
     }
     else
-        dj = 60 * sign_of(sin(deg_to_rad(inf->fov)));
+        dj = tile_size * sign_of(sin(deg_to_rad(inf->fov)));
 
     di = dj / tan(deg_to_rad(inf->fov));
 
-    ti = (60 / tan(deg_to_rad(inf->fov))) * sign_of(sin(deg_to_rad(inf->fov)));
-    tj = 60 * (sign_of(sin(deg_to_rad(inf->fov))));
+    ti = (tile_size / tan(deg_to_rad(inf->fov))) * sign_of(sin(deg_to_rad(inf->fov)));
+    tj = tile_size * (sign_of(sin(deg_to_rad(inf->fov))));
 
     while (check_points_h(inf->pi + di, inf->pj + dj, inf->pd, inf))
     {
@@ -251,6 +273,7 @@ void    calc_col_dis(t_inf *inf)
             inf->col_dist = sqrt(inf->col_dist);
             inf->flag = 0;
         }
+        printf("\n------------------\n");
     }
     else
     {
@@ -263,60 +286,77 @@ void    calc_col_dis(t_inf *inf)
         d_v = sqrt(d_v);
         // printf("d_v after sqrt = %f\n", d_v);
         inf->col_dist = min(d_h, d_v);
+        printf("\n=====================\n");
     }
 }
 
+// redisplay
 int	key_hook(int keycode, t_inf *inf)
 {
-    int t2;
-    int t1;
+    double  new_i;
+    double  new_j;
 
     if (keycode == 126)
     {
-        t1 = inf->pi;
-        t2 = inf->pj;
-        ray(inf, deg_to_rad(inf->fov), inf->pd, 0);
-        inf->pi += (8 * cos(deg_to_rad(inf->fov)));
-        inf->pj += (8 * sin(deg_to_rad(inf->fov)));
-        h_intersections(inf);
-        v_intersections(inf);
-        calc_col_dis(inf);
-        ray(inf, deg_to_rad(inf->fov), inf->pd, 1);
-        inf->o_col_dist = inf->col_dist;
-
+        new_i = inf->pi + (8 * cos(deg_to_rad(inf->fov)));
+        new_j = inf->pj + (8 * sin(deg_to_rad(inf->fov)));
+        if (inf->pd->map[(int)(new_j / tile_size)][(int)(new_i / tile_size)] != '1')
+        {
+            mlx_clear_window(inf->mlx, inf->win_ptr);
+            ray(inf, deg_to_rad(inf->fov), inf->pd, 0);
+            inf->pi = new_i;
+            inf->pj = new_j;
+            h_intersections(inf);
+            v_intersections(inf);
+            calc_col_dis(inf);
+            ray(inf, deg_to_rad(inf->fov), inf->pd, 1);
+            inf->o_col_dist = inf->col_dist;          
+            mlx_put_image_to_window(inf->mlx, inf->win_ptr, inf->img.img_ptr, 0, 0);
+        }
+        
     }
     if (keycode == 125)
     {
-        t1 = inf->pi;
-        t2 = inf->pj;
-        ray(inf, deg_to_rad(inf->fov), inf->pd, 0);
-        inf->pi -= ( 8 * cos(deg_to_rad(inf->fov)));
-        inf->pj -= ( 8 * sin(deg_to_rad(inf->fov)));
-        h_intersections(inf);
-        v_intersections(inf);
-        calc_col_dis(inf);
-        ray(inf, deg_to_rad(inf->fov), inf->pd, 1);
-        inf->o_col_dist = inf->col_dist;
+        new_i = inf->pi - (8 * cos(deg_to_rad(inf->fov)));
+        new_j = inf->pj - (8 * sin(deg_to_rad(inf->fov)));
+        if (inf->pd->map[(int)(new_j / tile_size)][(int)(new_i / tile_size)] != '1') // wall collision0
+        {
+            mlx_clear_window(inf->mlx, inf->win_ptr);
+            ray(inf, deg_to_rad(inf->fov), inf->pd, 0);
+            inf->pi = new_i;
+            inf->pj = new_j;
+            h_intersections(inf);
+            v_intersections(inf);
+            calc_col_dis(inf);
+            ray(inf, deg_to_rad(inf->fov), inf->pd, 1);
+            inf->o_col_dist = inf->col_dist;          
+            mlx_put_image_to_window(inf->mlx, inf->win_ptr, inf->img.img_ptr, 0, 0);
+        }
+        
     }
     if (keycode == 2)
     {
+        mlx_clear_window(inf->mlx, inf->win_ptr);
         ray(inf, deg_to_rad(inf->fov), inf->pd, 0);
         inf->fov += inf->step;
         h_intersections(inf);
         v_intersections(inf);
         calc_col_dis(inf);
         ray(inf, deg_to_rad(inf->fov), inf->pd, 1);
-        inf->o_col_dist = inf->col_dist;
+        inf->o_col_dist = inf->col_dist;   
+        mlx_put_image_to_window(inf->mlx, inf->win_ptr, inf->img.img_ptr, 0, 0);
     }
     if (!keycode)
     {
+        mlx_clear_window(inf->mlx, inf->win_ptr);
         ray(inf, deg_to_rad(inf->fov), inf->pd, 0);
         inf->fov -= inf->step;
         h_intersections(inf);
         v_intersections(inf);
         calc_col_dis(inf);
         ray(inf, deg_to_rad(inf->fov), inf->pd, 1);
-        inf->o_col_dist = inf->col_dist;
+        inf->o_col_dist = inf->col_dist;          
+        mlx_put_image_to_window(inf->mlx, inf->win_ptr, inf->img.img_ptr, 0, 0);
     }
 	return (0);
 }
@@ -339,13 +379,15 @@ int main(int ac, char **av)
     t_pd    pd;
 
     inf.fov = 135;
-    inf.step = 4;
+    inf.step = 9;
     inf.flag = 0;
     pd = m_function(ac, av);
     printf("max width = %d\nmax_height = %d\n", pd.max_width, pd.max_height);
     inf.pd = &pd;
     inf.mlx = mlx_init();
     inf.win_ptr = mlx_new_window(inf.mlx, pd.max_width * 60, pd.max_height * 60, "3D");
+    inf.img.img_ptr = mlx_new_image(inf.mlx, pd.max_width * tile_size, pd.max_height * tile_size);
+    inf.img.adrr = mlx_get_data_addr(inf.img.img_ptr, &inf.img.bpp, &inf.img.size_line, &inf.img.endian);
     m_fill(&inf, pd);
     put_player(&inf, &pd, 1);
     put_lines(&inf, pd);
@@ -355,5 +397,6 @@ int main(int ac, char **av)
     ray(&inf, deg_to_rad(inf.fov), inf.pd, 1);
     inf.o_col_dist = inf.col_dist;
     mlx_hook(inf.win_ptr, 2, 0, key_hook, &inf);
+    mlx_put_image_to_window(inf.mlx, inf.win_ptr, inf.img.img_ptr, 0, 0);
     mlx_loop(inf.mlx);
 }
