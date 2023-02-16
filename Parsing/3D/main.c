@@ -134,7 +134,7 @@ int check_points_h(double i, double j, t_pd *pd, t_inf *inf)
     // \ni = %f=%d\n j = %f=%d\n", i,x, j ,y);
     // printf("j / unit = %f\n", j / unit);
         printf("went here h\n");
-        put_point(inf, i, j, 1);
+        // put_point(inf, i, j, 1);
         inf->h_i = i;
         inf->h_j = j;
         return (0);
@@ -178,7 +178,7 @@ int check_points_v(double i, double j, t_pd *pd, t_inf *inf)
     // \ni = %f=%d\n j = %f=%d\n", i,x, j ,y);
     // printf("j / unit = %f\n", j / unit);
         printf("went here v\n");
-        put_point(inf, i, j, 2);
+        // put_point(inf, i, j, 2);
         inf->v_i = i;
         inf->v_j = j;
         return (0);
