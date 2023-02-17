@@ -1,15 +1,15 @@
 F 111,1,111 
 
 
-SO  ./textures_xpm/naturalbricks_hd_middle.xpm
-EA ./textures_xpm/naturalbricks_hd_middle.xpm
-NO    ./textures_xpm/naturalbricks_hd_verydark.xpm
-WE ./textures_xpm/naturalbricks_hd_middle.xpm         
+SO ./textures/mossy.xpm
+EA ./textures/mossy.xpm
+NO ./textures/greystone_dark.xpm
+WE ./textures/greystone.xpm 
  
 
 C 255,100,160      
 
-   
+
 
 
  
