@@ -45,7 +45,7 @@ void    ray(t_inf *inf, double angle, t_pd *pd, int m)
     {
         t =  inf->pi + (l * cos(angle));
         t2 = inf->pj + (l * sin(angle));
-        printf("t = %d t2 = %d\n", t, t2);
+        // printf("t = %d t2 = %d\n", t, t2);
         // pretoction from segfault
         if (t < 0 || t >= pd->max_width * tile_size || t2 >= pd->max_height * tile_size || t2 < 0)
             break ;
@@ -102,6 +102,52 @@ int sign_of(double n)
         return (-1);
 }
 
+int check_square(t_inf *inf, int x, int y, double i, double j, int m)
+{
+    if (y < 0 || x < 0 || y > inf->pd->max_height ||\
+    x > ft_len(inf->pd->map[y]) )
+    {
+        // printf("i = %f=%d\n j = %f=%d\n", i, x, j ,y);
+        // printf("went here\n");
+        inf->flag = -2; //check description in the check_point_v() function;
+        return (0);
+    }
+    if (i == tile_size || j == tile_size || inf->pd->map[y][x] == '1' || !inf->pd->map[y][x]) //might wanna round the i and j;
+    {
+        printf("went here\n");
+        if (m == 1)
+        {
+            inf->h_i = i;
+            inf->h_j = j;
+        }
+        else
+        {
+            inf->v_i = i;
+            inf->v_j = j;
+        }
+        return (0);
+    }
+    return (1);
+}
+
+int checK_four_squares(t_inf *inf , double i, double j, int m)
+{
+    int x;
+    int y;
+
+    x = (int)((round(i) / tile_size));
+    y = (int)((round(j) / tile_size));
+    if (!check_square(inf, x, y, i, j, m))
+        return (0);
+    if (!check_square(inf, x - 1, y, i, j, m))
+        return (0);
+    if (!check_square(inf, x, y - 1, i, j, m))
+        return (0);
+    if (!check_square(inf, x - 1, y - 1, i, j, m))
+        return (0);
+    return (1);
+}
+
 int check_points_h(double i, double j, t_pd *pd, t_inf *inf)
 {
     double unit;
@@ -112,8 +158,6 @@ int check_points_h(double i, double j, t_pd *pd, t_inf *inf)
 
     unit = tile_size;
     x = (int)((round(i) / unit));
-    if (!fmod(round(i), tile_size) && sign_of(cos(deg_to_rad(inf->fov))) == -1)
-        x -= 1;
     dir = sign_of(sin(deg_to_rad(inf->fov)));
     if (dir < 0)
         y = (int)(round(j) / unit) - 1;
@@ -139,6 +183,8 @@ int check_points_h(double i, double j, t_pd *pd, t_inf *inf)
         inf->h_j = j;
         return (0);
     }
+    if (!fmod(round(i), tile_size) && !fmod(round(j), tile_size))
+        return (checK_four_squares(inf, i, j, 1));
     return (1);
 }
 
@@ -151,11 +197,7 @@ int check_points_v(double i, double j, t_pd *pd, t_inf *inf)
 
     unit = tile_size;
     int y = (int)((round(j) / unit));
-//    if (!fmod(round(j), tile_size) && sign_of(sin(deg_to_rad(inf->fov))) == -1)
-//     {
-//         y -= 1;
-//         printf("yep\n");
-//     }
+
     dir = sign_of(cos(deg_to_rad(inf->fov)));
     if (dir < 0)
         x = (int)(round(i) / unit) - 1;
@@ -183,6 +225,8 @@ int check_points_v(double i, double j, t_pd *pd, t_inf *inf)
         inf->v_j = j;
         return (0);
     }
+    if (!fmod(round(i), tile_size) && !fmod(round(j), tile_size))
+        return (checK_four_squares(inf, i, j, 2));
     // printf("i = %f=%d\n j = %f=%d\n", i,x, j ,y);
     // printf("j / unit = %f\n", j / unit);
     //     printf("went here 2\n");
@@ -379,7 +423,7 @@ int main(int ac, char **av)
     t_pd    pd;
 
     inf.fov = 135;
-    inf.step = 9;
+    inf.step = 5;
     inf.flag = 0;
     pd = m_function(ac, av);
     printf("max width = %d\nmax_height = %d\n", pd.max_width, pd.max_height);
