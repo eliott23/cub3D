@@ -38,11 +38,6 @@ typedef struct inf{
     int     flag;
 }   t_inf;
 
-typedef struct ray_inf{
-    double  col_dist;
-    int     col_dir;
-}   t_ray;
-
 void    put_point(t_inf *inf, double i, double j, int m);
 void    put_player(t_inf *inf, t_pd *pd, int m);
 int	    create_trgb(int t, int r, int g, int b);

@@ -34,16 +34,7 @@ void    ray(t_inf *inf, double angle, t_pd *pd, int m)
     int lim;
 
     // printf("this")
-    if (m)
-    {
-        lim = (int)inf->col_dist;
-        printf("new col = %d\n", (int)inf->col_dist);
-    }
-    else
-    {
-        lim = (int)inf->o_col_dist;
-        printf("old col = %d\n", (int)inf->o_col_dist);
-    }
+    lim = (int)inf->col_dist;
     while (l < lim)
     {
         t =  inf->pi + (l * cos(angle));
@@ -357,7 +348,6 @@ int	key_hook(int keycode, t_inf *inf)
             v_intersections(inf);
             calc_col_dis(inf);
             ray(inf, deg_to_rad(inf->fov), inf->pd, 1);
-            inf->o_col_dist = inf->col_dist;          
             mlx_put_image_to_window(inf->mlx, inf->win_ptr, inf->img.img_ptr, 0, 0);
         }
     }
@@ -375,7 +365,6 @@ int	key_hook(int keycode, t_inf *inf)
             v_intersections(inf);
             calc_col_dis(inf);
             ray(inf, deg_to_rad(inf->fov), inf->pd, 1);
-            inf->o_col_dist = inf->col_dist;          
             mlx_put_image_to_window(inf->mlx, inf->win_ptr, inf->img.img_ptr, 0, 0);
         }
         
@@ -389,7 +378,6 @@ int	key_hook(int keycode, t_inf *inf)
         v_intersections(inf);
         calc_col_dis(inf);
         ray(inf, deg_to_rad(inf->fov), inf->pd, 1);
-        inf->o_col_dist = inf->col_dist;   
         mlx_put_image_to_window(inf->mlx, inf->win_ptr, inf->img.img_ptr, 0, 0);
     }
     if (!keycode)
@@ -401,7 +389,6 @@ int	key_hook(int keycode, t_inf *inf)
         v_intersections(inf);
         calc_col_dis(inf);
         ray(inf, deg_to_rad(inf->fov), inf->pd, 1);
-        inf->o_col_dist = inf->col_dist;          
         mlx_put_image_to_window(inf->mlx, inf->win_ptr, inf->img.img_ptr, 0, 0);
     }
 	return (0);
@@ -419,7 +406,6 @@ void    redisplay_view(t_inf *inf, int keycode)
 	v_intersections(inf);
 	calc_col_dis(inf);
 	ray(inf, deg_to_rad(inf->fov), inf->pd, 1);
-	inf->o_col_dist = inf->col_dist;   
 	mlx_put_image_to_window(inf->mlx, inf->win_ptr, inf->img.img_ptr, 0, 0);
 }
 
@@ -433,7 +419,6 @@ void    redisplay_move(double new_i, double new_j, t_inf *inf)
 	v_intersections(inf);
 	calc_col_dis(inf);
 	ray(inf, deg_to_rad(inf->fov), inf->pd, 1);
-	inf->o_col_dist = inf->col_dist;
 	mlx_put_image_to_window(inf->mlx, inf->win_ptr, inf->img.img_ptr, 0, 0);
 }
 
@@ -471,7 +456,6 @@ int main(int ac, char **av)
     v_intersections(&inf);
     calc_col_dis(&inf);
     ray(&inf, deg_to_rad(inf.fov), inf.pd, 1);
-    inf.o_col_dist = inf.col_dist;
     mlx_hook(inf.win_ptr, 2, 0, key_hook, &inf);
     mlx_put_image_to_window(inf.mlx, inf.win_ptr, inf.img.img_ptr, 0, 0);
     mlx_loop(inf.mlx);
