@@ -1,5 +1,9 @@
 F 111,1,111 
 
+<<<<<<< Updated upstream
+=======
+testt
+>>>>>>> Stashed changes
 
 SO ./textures/mossy.xpm
 EA ./textures/mossy.xpm
