@@ -1,9 +1,6 @@
 #include "../p.h"
 #include "d.h"
 
-
-
-
 void    put_lines(t_inf *inf, t_pd pd)
 {
     int i;

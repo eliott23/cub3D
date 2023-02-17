@@ -434,7 +434,7 @@ void    redisplay_move(double new_i, double new_j, t_inf *inf)
 	v_intersections(inf);
 	calc_col_dis(inf);
 	ray(inf, deg_to_rad(inf->fov), inf->pd, 1);
-	inf->o_col_dist = inf->col_dist;          
+	inf->o_col_dist = inf->col_dist;
 	mlx_put_image_to_window(inf->mlx, inf->win_ptr, inf->img.img_ptr, 0, 0);
 }
 
