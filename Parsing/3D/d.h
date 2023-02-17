@@ -45,4 +45,6 @@ void    put_lines(t_inf *inf, t_pd pd);
 void	my_mlx_pixel_put(t_inf *data, int x, int y, int color);
 void    redisplay_view(t_inf *inf, int keycode);
 void    redisplay_move(double new_i, double new_j, t_inf *inf);
+void    ray(t_inf *inf, double angle, t_pd *pd, int m);
+void	castAllRays(t_inf *inf, int m);
 #endif 

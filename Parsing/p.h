@@ -40,4 +40,5 @@ void    check_fd(int fd);
 void    *ft_calloc(size_t i);
 char    *ft_strdup(char *s);
 char    *ft_strjoin(char *s1, char *s2);
+int     is_player(char player);
 #endif
