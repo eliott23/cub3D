@@ -1,5 +1,8 @@
 #include "d.h"
 
+
+
+
 void	my_mlx_pixel_put(t_inf *inf, int x, int y, int color)
 {
 	int		offset;
@@ -403,6 +406,36 @@ int	key_hook(int keycode, t_inf *inf)
         mlx_put_image_to_window(inf->mlx, inf->win_ptr, inf->img.img_ptr, 0, 0);
     }
 	return (0);
+}
+
+void    redisplay_view(t_inf *inf, int keycode)
+{
+	mlx_clear_window(inf->mlx, inf->win_ptr);
+	ray(inf, deg_to_rad(inf->fov), inf->pd, 0);
+	if (keycode == 2)
+		inf->fov += inf->step;
+	else
+		inf->fov -= inf->step;
+	h_intersections(inf);
+	v_intersections(inf);
+	calc_col_dis(inf);
+	ray(inf, deg_to_rad(inf->fov), inf->pd, 1);
+	inf->o_col_dist = inf->col_dist;   
+	mlx_put_image_to_window(inf->mlx, inf->win_ptr, inf->img.img_ptr, 0, 0);
+}
+
+void    redisplay_move(double new_i, double new_j, t_inf *inf)
+{
+	mlx_clear_window(inf->mlx, inf->win_ptr);
+	ray(inf, deg_to_rad(inf->fov), inf->pd, 0);
+	inf->pi = new_i;
+	inf->pj = new_j;
+	h_intersections(inf);
+	v_intersections(inf);
+	calc_col_dis(inf);
+	ray(inf, deg_to_rad(inf->fov), inf->pd, 1);
+	inf->o_col_dist = inf->col_dist;          
+	mlx_put_image_to_window(inf->mlx, inf->win_ptr, inf->img.img_ptr, 0, 0);
 }
 
 void    put_rays(t_inf *inf, int m)
