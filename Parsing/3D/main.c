@@ -360,7 +360,6 @@ int	key_hook(int keycode, t_inf *inf)
             inf->o_col_dist = inf->col_dist;          
             mlx_put_image_to_window(inf->mlx, inf->win_ptr, inf->img.img_ptr, 0, 0);
         }
-        
     }
     if (keycode == 125)
     {
