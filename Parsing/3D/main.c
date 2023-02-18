@@ -69,7 +69,7 @@ void    m_fill(t_inf *inf, t_pd pd)
 				break;
 			if (pd.map[j / tile_size][i / tile_size] == '0' || is_player(pd.map[j / tile_size][i / tile_size])) //check later;
 				my_mlx_pixel_put(inf, i, j, create_trgb(0, 192, 192, 192));
-			else
+			else if (pd.map[j / tile_size][i / tile_size] == '1')
 				my_mlx_pixel_put(inf, i, j, create_trgb(0, 32, 32, 32));
 			i++;
 		}
