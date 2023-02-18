@@ -1,7 +1,5 @@
 F 111,1,111 
 
-test
-
 SO ./textures/mossy.xpm
 EA ./textures/mossy.xpm
 NO ./textures/greystone_dark.xpm
