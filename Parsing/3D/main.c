@@ -156,7 +156,7 @@ int check_points_h(double i, double j, t_pd *pd, t_inf *inf)
 		inf->flag = -2; //check description in the check_point_v() function;
 		return (0);
 	}
-	if (i == unit || j == unit || pd->map[y][x] == '1' || !pd->map[y][x])
+	if (i == unit || j == unit || pd->map[y][x] == '1' || pd->map[y][x] == ' ' || !pd->map[y][x])
 	{
 		printf("went here h\n");
 		// put_point(inf, i, j, 1);
@@ -192,7 +192,7 @@ int check_points_v(double i, double j, t_pd *pd, t_inf *inf)
 						//then ofc reset the flag to 0 after every time we check it;
 		return (0);
 	}
-	if (i == unit || j == unit || pd->map[y][x] == '1' || !pd->map[y][x])
+	if (i == unit || j == unit || pd->map[y][x] == '1' || pd->map[y][x] == ' ' || !pd->map[y][x])
 	{
 		printf("went here v\n");
 		// put_point(inf, i, j, 2);
@@ -337,7 +337,7 @@ void    redisplay_view(t_inf *inf, int keycode)
 	while (inf->ray <= inf->fov + 30)
 	{
 		ray(inf, deg_to_rad(inf->ray), inf->pd, 0);
-		inf->ray++;
+		inf->ray += 0.5;
 		inf->index++;
 	}
 	if (keycode == 2)
@@ -352,7 +352,7 @@ void    redisplay_view(t_inf *inf, int keycode)
 		v_intersections(inf);
 		calc_col_dis(inf);
 		ray(inf, deg_to_rad(inf->ray), inf->pd, 1);
-		inf->ray++;
+		inf->ray += 0.5;
 		inf->index++;
 	}
 	mlx_put_image_to_window(inf->mlx, inf->win_ptr, inf->img.img_ptr, 0, 0);
@@ -366,7 +366,7 @@ void    redisplay_move(double new_i, double new_j, t_inf *inf, int keycode)
 		while (inf->ray <= inf->fov + 30)
 		{
 			ray(inf, deg_to_rad(inf->ray), inf->pd, 0);
-			inf->ray++;
+			inf->ray += 0.5;
 			inf->index++;
 		}
 		inf->index = 0;
@@ -379,7 +379,7 @@ void    redisplay_move(double new_i, double new_j, t_inf *inf, int keycode)
 			v_intersections(inf);
 			calc_col_dis(inf);
 			ray(inf, deg_to_rad(inf->ray), inf->pd, 1);
-			inf->ray++;
+			inf->ray += 0.5;
 			inf->index++;
 		}
 		mlx_put_image_to_window(inf->mlx, inf->win_ptr, inf->img.img_ptr, 0, 0);
@@ -392,7 +392,7 @@ int main(int ac, char **av)
 
 	inf.step = 5;
 	inf.flag = 0;
-	inf.col_dist = malloc(sizeof(double) * 61);
+	inf.col_dist = malloc(sizeof(double) * 122);
 	pd = m_function(ac, av);
 	inf.pd = &pd;
 	inf.mlx = mlx_init();
@@ -411,7 +411,7 @@ int main(int ac, char **av)
 		v_intersections(&inf);
 		calc_col_dis(&inf);
 		ray(&inf, deg_to_rad(inf.ray), inf.pd, 1);
-		inf.ray++;
+		inf.ray += 0.5;
 		inf.index++;
 		printf("index =%d\n", inf.index);
 
