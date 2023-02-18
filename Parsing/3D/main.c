@@ -392,7 +392,7 @@ int main(int ac, char **av)
 
 	inf.step = 5;
 	inf.flag = 0;
-	inf.col_dist = malloc(sizeof(double) * 122);
+	inf.col_dist = malloc(sizeof(double) * 121);
 	pd = m_function(ac, av);
 	inf.pd = &pd;
 	inf.mlx = mlx_init();
