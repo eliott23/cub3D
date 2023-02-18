@@ -5,6 +5,8 @@ void	my_mlx_pixel_put(t_inf *inf, int x, int y, int color)
 {
 	int		offset;
 	char	*pixel;
+	x = x / 6;
+	y = y / 6;
 	//to get the position of the current pixel
 	//bpp is devided by 8 cus its already multiplied by 8 (a pixel is coded on 4 char, those chars worth 8 bits each)
 	//(X position * 4 + 4 * Line size * Y position)
@@ -40,10 +42,12 @@ void    ray(t_inf *inf, double angle, t_pd *pd, int m)
 			break ;
 		if (m)
 			my_mlx_pixel_put(inf, t, t2, create_trgb(50, 255, 0, 0));
-		else if ((t % tile_size) && (t2 % tile_size))
-			my_mlx_pixel_put(inf, t, t2, create_trgb(0, 192, 192, 192));
+		// else if ((t % tile_size) && (t2 % tile_size))
+			// my_mlx_pixel_put(inf, t, t2, create_trgb(0, 192, 192, 192));
 		else
-			my_mlx_pixel_put(inf, t, t2, create_trgb(100, 32, 32, 32));
+			my_mlx_pixel_put(inf, t, t2, create_trgb(0, 192, 192, 192));
+		// else
+			// my_mlx_pixel_put(inf, t, t2, create_trgb(100, 32, 32, 32));
 		l++;
 	}
 }
@@ -311,14 +315,18 @@ int	key_hook(int keycode, t_inf *inf)
 	{
 		new_i = inf->pi + (8 * cos(deg_to_rad(inf->fov)));
 		new_j = inf->pj + (8 * sin(deg_to_rad(inf->fov)));
-		if (inf->pd->map[(int)(new_j / tile_size)][(int)(new_i / tile_size)] != '1')
+		if (inf->pd->map[(int)(new_j / tile_size)][(int)(inf->pi / tile_size)] != '1' &&\
+		inf->pd->map[(int)(inf->pj / tile_size)][(int)(new_i / tile_size)] != 1 && \
+		inf->pd->map[(int)(new_j / tile_size)][(int)(new_i / tile_size)] != '1')
 			redisplay_move(new_i, new_j, inf, keycode);
 	}
 	if (keycode == 125)
 	{
 		new_i = inf->pi - (8 * cos(deg_to_rad(inf->fov)));
 		new_j = inf->pj - (8 * sin(deg_to_rad(inf->fov)));
-		if (inf->pd->map[(int)(new_j / tile_size)][(int)(new_i / tile_size)] != '1') // wall collision0
+		if (inf->pd->map[(int)(new_j / tile_size)][(int)(inf->pi / tile_size)] != '1' &&\
+		inf->pd->map[(int)(inf->pj / tile_size)][(int)(new_i / tile_size)] != 1 && \
+		inf->pd->map[(int)(new_j / tile_size)][(int)(new_i / tile_size)] != '1')
 			redisplay_move(new_i, new_j, inf, keycode);
 		
 	}
@@ -401,7 +409,7 @@ int main(int ac, char **av)
 	inf.img.adrr = mlx_get_data_addr(inf.img.img_ptr, &inf.img.bpp, &inf.img.size_line, &inf.img.endian);
 	m_fill(&inf, pd);
 	put_player(&inf, &pd, 1);
-	put_lines(&inf, pd);
+	// put_lines(&inf, pd);
 	// inf.fov = 5;
 	inf.ray = inf.fov - 30;
 	inf.index = 0;
