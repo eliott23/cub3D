@@ -415,7 +415,7 @@ int main(int ac, char **av)
 	t_inf   inf;
 	t_pd    pd;
 
-	inf.step = 8;
+	inf.step = 5;
 	inf.flag = 0;
 	inf.col_dist = malloc(sizeof(double) * 1501);
 	pd = m_function(ac, av);

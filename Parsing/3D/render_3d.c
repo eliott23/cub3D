@@ -1,7 +1,7 @@
 #include "d.h"
 int get_start_p(t_inf *inf)
 {
-    return (450 - (int)((tile_size / inf->col_dist[inf->index]) * 350));
+    return (450 - (int)((tile_size / inf->col_dist[inf->index]) * 300));
 }
 
 void    draw_sma_wlard(t_inf *inf)
