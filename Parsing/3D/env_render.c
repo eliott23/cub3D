@@ -8,7 +8,7 @@ void    put_lines(t_inf *inf, t_pd pd)
 
 	i = tile_size;
 	j = tile_size;
-	while (i < 1501)
+	while (i < pd.max_width * tile_size)
 	{
 		j = tile_size;
 		while (j < tile_size * pd.max_height)
@@ -23,15 +23,15 @@ void    put_lines(t_inf *inf, t_pd pd)
 
 void    set_fov(char player, t_inf *inf)
 {
-	inf->fov = 0;
-	// if (player == 'N')
-	// 	inf->fov = 90;
-	// else if (player == 'S')
-	// 	inf->fov = 270;
-	// else if (player == 'E')
-	// 	inf->fov = 360;
-	// else if (player == 'W')
-	// 	inf->fov = 180;
+	// inf->fov = 0;
+	if (player == 'N')
+		inf->fov = 90;
+	else if (player == 'S')
+		inf->fov = 270;
+	else if (player == 'E')
+		inf->fov = 360;
+	else if (player == 'W')
+		inf->fov = 180;
 }
 
 void    put_player(t_inf *inf, t_pd *pd, int m)
@@ -54,9 +54,9 @@ void    put_player(t_inf *inf, t_pd *pd, int m)
 			{
 				set_fov(pd->map[j][i], inf);
 				i = i * tile_size;
-				inf->pi = i;
+				inf->p.i = i;
 				j = j * tile_size;
-				inf->pj = j;
+				inf->p.j = j;
 				f = 1;
 				break;
 			}
@@ -66,12 +66,12 @@ void    put_player(t_inf *inf, t_pd *pd, int m)
 			break;
 		j++;
 	}
-	t = inf->pi;
-	t2 = inf->pj;
+	t = inf->p.i;
+	t2 = inf->p.j;
 	while (j < pd->max_height * tile_size && j < t2 + 5)
 	{
 		i = t;
-		while (i < 1501 && i < t + 5)
+		while (i < pd->max_width * tile_size && i < t + 5)
 		{
 			if (m)
 				my_mlx_pixel_put(&inf->mini_map, i , j, create_trgb(0, 255, 0, 0), 1);
@@ -115,7 +115,7 @@ void	Background(t_inf *data, int color)
 	while (y < data->pd->max_height * 64)
 	{
 		int x = 0;
-		while (x < 1501)
+		while (x < data->pd->max_width * tile_size)
 		{
 			my_mlx_pixel_put(&data->frame, x, y, color, 0);
 			x++;
@@ -128,7 +128,7 @@ void	castAllRays(t_inf *inf, int m)
 {
 	inf->ray = inf->fov - 30;
 	inf->index = 0;
-	while (inf->ray <= inf->fov + 30)
+	while (inf->ray <= inf->fov + 30 && inf->index < (inf->pd->max_width * tile_size) + 1)
 	{
 		if (m)
 		{		
@@ -148,6 +148,7 @@ void	launch(t_inf *inf)
 	put_player(inf, inf->pd, 1);
 	castAllRays(inf, 1);
 	Background(inf, Black);
+	render_3d(inf);
 	mlx_put_image_to_window(inf->mlx, inf->win_ptr, inf->frame.img_ptr, 0, 0);
 	mlx_put_image_to_window(inf->mlx, inf->win_ptr, inf->mini_map.img_ptr, 0, 0);
 }

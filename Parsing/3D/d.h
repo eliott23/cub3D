@@ -18,6 +18,18 @@
 # define Coral          0xFF7F50
 # define AliceBlue      0xF0F8FF
 
+typedef struct s_index
+{
+	double	i;
+	double	j;
+}	t_index;
+
+typedef struct s_rays
+{
+	double  col_dist;
+	double  rayAngle;
+}	t_rays;
+
 typedef struct s_img
 {
 	void	*img_ptr;
@@ -32,20 +44,15 @@ typedef struct inf{
 	void    *mlx;
 	t_img   mini_map;
 	t_img   frame;
-	int     *p_w;
-	int     *p_h;
-	double  pi;
-	double  pj;
+	t_index	p;
+	t_index	h;
+	t_index	v;
 	double  fov;
 	double  ray;
 	t_pd    *pd;
 	int     step;
-	double  h_i;
-	double  h_j;
-	double  v_i;
-	double  v_j;
 	int     index;
-	double  *col_dist;
+	t_rays	*rays;
 	int     flag;
 }   t_inf;
 
