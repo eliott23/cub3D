@@ -30,7 +30,6 @@ int element_id(char *s)
             return (i);
         i++;
     }
-    printf("lol |%s|", s);
     f_perror();
     return (-1);
 }
