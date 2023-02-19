@@ -14,7 +14,7 @@ void    put_lines(t_inf *inf, t_pd pd)
 		while (j < tile_size * pd.max_height)
 		{
 			if (!(j % tile_size) || !(i % tile_size))
-				my_mlx_pixel_put(inf, i, j, create_trgb(100, 32, 32, 32));
+				my_mlx_pixel_put(inf, i, j, create_trgb(100, 32, 32, 32), 0);
 			j++;
 		}
 		i++;
@@ -73,9 +73,9 @@ void    put_player(t_inf *inf, t_pd *pd, int m)
 		while (i < pd->max_width * tile_size && i < t + 5)
 		{
 			if (m)
-				my_mlx_pixel_put(inf, i, j, create_trgb(0, 255, 0, 0));
+				my_mlx_pixel_put(inf, i, j, create_trgb(0, 255, 0, 0), 0);
 			else
-				my_mlx_pixel_put(inf, i, j, create_trgb(0, 192, 192, 192));
+				my_mlx_pixel_put(inf, i, j, create_trgb(0, 192, 192, 192), 0);
 			i++;
 		}
 		j++;
@@ -99,9 +99,9 @@ void    put_point(t_inf *inf, double i, double j, int m)
 		while (y < j + 3)
 		{
 			if (m == 1)
-				my_mlx_pixel_put(inf, x, y, create_trgb(0, 0, 255, 0));
+				my_mlx_pixel_put(inf, x, y, create_trgb(0, 0, 255, 0), 0);
 			else
-				my_mlx_pixel_put(inf, x, y, create_trgb(0, 255, 0, 0));
+				my_mlx_pixel_put(inf, x, y, create_trgb(0, 255, 0, 0), 0);
 			y++;
 		}
 		x++;

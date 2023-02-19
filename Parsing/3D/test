@@ -1,6 +1,6 @@
 F 111,1,111 
 
-SO ./textures/mossy.xpm
+SO    ./textures/mossy.xpm       
 EA ./textures/mossy.xpm
 NO ./textures/greystone_dark.xpm
 WE ./textures/greystone.xpm 
@@ -14,7 +14,7 @@ C 255,100,160
  
 
 
-111111111  111111
+111111111  111111     
 10001000111100001                           
 1011000010000010111111
 10000000000000000000001

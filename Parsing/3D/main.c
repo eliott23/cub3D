@@ -1,18 +1,27 @@
 #include "d.h"
 
 
-void	my_mlx_pixel_put(t_inf *inf, int x, int y, int color)
+void	my_mlx_pixel_put(t_inf *inf, int x, int y, int color, int m)
 {
 	int		offset;
 	char	*pixel;
-	x = x / 6;
-	y = y / 6;
+	if (!m)
+	{
+		x = x / 6;
+		y = y / 6;
+		offset = y * inf->img.size_line + x * (inf->img.bpp / 8);
+		pixel = inf->img.adrr + offset;
+		*(unsigned int *)pixel = color;
+	}
+	else
+	{
+		offset = y * inf->g_img.size_line + x * (inf->g_img.bpp / 8);
+		pixel = inf->g_img.adrr + offset;
+		*(unsigned int *)pixel = color;
+	}
 	//to get the position of the current pixel
 	//bpp is devided by 8 cus its already multiplied by 8 (a pixel is coded on 4 char, those chars worth 8 bits each)
 	//(X position * 4 + 4 * Line size * Y position)
-	offset = y * inf->img.size_line + x * (inf->img.bpp / 8);
-	pixel = inf->img.adrr + offset;
-	*(unsigned int *)pixel = color;
 }
 
 int calc_cord(double angle, int l, int j, int i, t_pd *pd)
@@ -41,11 +50,11 @@ void    ray(t_inf *inf, double angle, t_pd *pd, int m)
 		if (t < 0 || t >= pd->max_width * tile_size || t2 >= pd->max_height * tile_size || t2 < 0)
 			break ;
 		if (m)
-			my_mlx_pixel_put(inf, t, t2, create_trgb(50, 255, 0, 0));
+			my_mlx_pixel_put(inf, t, t2, create_trgb(50, 255, 0, 0), 0);
 		// else if ((t % tile_size) && (t2 % tile_size))
 			// my_mlx_pixel_put(inf, t, t2, create_trgb(0, 192, 192, 192));
 		else
-			my_mlx_pixel_put(inf, t, t2, create_trgb(0, 192, 192, 192));
+			my_mlx_pixel_put(inf, t, t2, create_trgb(0, 192, 192, 192), 0);
 		// else
 			// my_mlx_pixel_put(inf, t, t2, create_trgb(100, 32, 32, 32));
 		l++;
@@ -72,9 +81,9 @@ void    m_fill(t_inf *inf, t_pd pd)
 			if (!pd.map[j / tile_size][i / tile_size])
 				break;
 			if (pd.map[j / tile_size][i / tile_size] == '0' || is_player(pd.map[j / tile_size][i / tile_size])) //check later;
-				my_mlx_pixel_put(inf, i, j, create_trgb(0, 192, 192, 192));
+				my_mlx_pixel_put(inf, i, j, create_trgb(0, 192, 192, 192), 0);
 			else if (pd.map[j / tile_size][i / tile_size] == '1')
-				my_mlx_pixel_put(inf, i, j, create_trgb(0, 32, 32, 32));
+				my_mlx_pixel_put(inf, i, j, create_trgb(0, 32, 32, 32), 0);
 			i++;
 		}
 		j++;
@@ -105,7 +114,7 @@ int check_square(t_inf *inf, int x, int y, double i, double j, int m)
 	}
 	if (i == tile_size || j == tile_size || inf->pd->map[y][x] == '1' || !inf->pd->map[y][x]) //might wanna round the i and j;
 	{
-		printf("went here\n");
+		// printf("went here\n");
 		if (m == 1)
 		{
 			inf->h_i = i;
@@ -162,7 +171,7 @@ int check_points_h(double i, double j, t_pd *pd, t_inf *inf)
 	}
 	if (i == unit || j == unit || pd->map[y][x] == '1' || pd->map[y][x] == ' ' || !pd->map[y][x])
 	{
-		printf("went here h\n");
+		// printf("went here h\n");
 		// put_point(inf, i, j, 1);
 		inf->h_i = i;
 		inf->h_j = j;
@@ -198,7 +207,7 @@ int check_points_v(double i, double j, t_pd *pd, t_inf *inf)
 	}
 	if (i == unit || j == unit || pd->map[y][x] == '1' || pd->map[y][x] == ' ' || !pd->map[y][x])
 	{
-		printf("went here v\n");
+		// printf("went here v\n");
 		// put_point(inf, i, j, 2);
 		inf->v_i = i;
 		inf->v_j = j;
@@ -293,7 +302,6 @@ void    calc_col_dis(t_inf *inf)
 			inf->col_dist[inf->index] = sqrt(inf->col_dist[inf->index]);
 			inf->flag = 0;
 		}
-		printf("\n------------------\n");
 	}
 	else
 	{
@@ -302,7 +310,6 @@ void    calc_col_dis(t_inf *inf)
 		d_v = ((inf->v_i - inf->pi) * (inf->v_i - inf->pi)) + ((inf->v_j - inf->pj) * (inf->v_j - inf->pj));
 		d_v = sqrt(d_v);
 		inf->col_dist[inf->index] = min(d_h, d_v);
-		printf("\n=====================\n");
 	}
 }
 
@@ -330,9 +337,7 @@ int	key_hook(int keycode, t_inf *inf)
 			redisplay_move(new_i, new_j, inf, keycode);
 		
 	}
-	if (keycode == 2)
-		redisplay_view(inf, keycode);
-	if (!keycode)
+	if (keycode == 2 || !keycode)
 		redisplay_view(inf, keycode);
 	return (0);
 }
@@ -345,7 +350,7 @@ void    redisplay_view(t_inf *inf, int keycode)
 	while (inf->ray <= inf->fov + 30)
 	{
 		ray(inf, deg_to_rad(inf->ray), inf->pd, 0);
-		inf->ray += 0.5;
+		inf->ray += 0.04;
 		inf->index++;
 	}
 	if (keycode == 2)
@@ -360,10 +365,16 @@ void    redisplay_view(t_inf *inf, int keycode)
 		v_intersections(inf);
 		calc_col_dis(inf);
 		ray(inf, deg_to_rad(inf->ray), inf->pd, 1);
-		inf->ray += 0.5;
+		inf->ray += 0.04;
 		inf->index++;
 	}
-	mlx_put_image_to_window(inf->mlx, inf->win_ptr, inf->img.img_ptr, 0, 0);
+		// mlx_destroy_image(inf->mlx, inf->g_img.img_ptr);
+		// inf->g_img.img_ptr = mlx_new_image(inf->mlx, 1501, inf->pd->max_height * tile_size);
+		// inf->g_img.adrr = mlx_get_data_addr(inf->g_img.img_ptr, &inf->g_img.bpp, &inf->g_img.size_line, &inf->g_img.endian);
+		draw_sma_wlard(inf);
+		render_3d(inf);
+		mlx_put_image_to_window(inf->mlx, inf->win_ptr, inf->g_img.img_ptr, 0, 0);
+		mlx_put_image_to_window(inf->mlx, inf->win_ptr, inf->img.img_ptr, 0, 0);
 }
 
 void    redisplay_move(double new_i, double new_j, t_inf *inf, int keycode)
@@ -374,7 +385,7 @@ void    redisplay_move(double new_i, double new_j, t_inf *inf, int keycode)
 		while (inf->ray <= inf->fov + 30)
 		{
 			ray(inf, deg_to_rad(inf->ray), inf->pd, 0);
-			inf->ray += 0.5;
+			inf->ray += 0.04;
 			inf->index++;
 		}
 		inf->index = 0;
@@ -387,9 +398,15 @@ void    redisplay_move(double new_i, double new_j, t_inf *inf, int keycode)
 			v_intersections(inf);
 			calc_col_dis(inf);
 			ray(inf, deg_to_rad(inf->ray), inf->pd, 1);
-			inf->ray += 0.5;
+			inf->ray += 0.04;
 			inf->index++;
 		}
+		// mlx_destroy_image(inf->mlx, inf->g_img.img_ptr);
+		// inf->g_img.img_ptr = mlx_new_image(inf->mlx, 1501, inf->pd->max_height * tile_size);
+		// inf->g_img.adrr = mlx_get_data_addr(inf->g_img.img_ptr, &inf->g_img.bpp, &inf->g_img.size_line, &inf->g_img.endian);
+		draw_sma_wlard(inf);
+		render_3d(inf);
+		mlx_put_image_to_window(inf->mlx, inf->win_ptr, inf->g_img.img_ptr, 0, 0);
 		mlx_put_image_to_window(inf->mlx, inf->win_ptr, inf->img.img_ptr, 0, 0);
 }
 
@@ -398,33 +415,41 @@ int main(int ac, char **av)
 	t_inf   inf;
 	t_pd    pd;
 
-	inf.step = 5;
+	inf.step = 8;
 	inf.flag = 0;
-	inf.col_dist = malloc(sizeof(double) * 121);
+	inf.col_dist = malloc(sizeof(double) * 1501);
 	pd = m_function(ac, av);
 	inf.pd = &pd;
 	inf.mlx = mlx_init();
-	inf.win_ptr = mlx_new_window(inf.mlx, pd.max_width * 60, pd.max_height * 60, "3D");
-	inf.img.img_ptr = mlx_new_image(inf.mlx, pd.max_width * tile_size, pd.max_height * tile_size);
+	inf.win_ptr = mlx_new_window(inf.mlx, 1501, pd.max_height * 60, "3D");
+	printf("width = %d\nheight = %d\n", 1501 , pd.max_height * 60);
+	inf.img.img_ptr = mlx_new_image(inf.mlx, pd.max_width * 10, pd.max_height * 10); //check later;
+	// inf.img.img_ptr = mlx_new_image(inf.mlx, pd.max_width * tile_size, pd.max_height * tile_size); //check later;
 	inf.img.adrr = mlx_get_data_addr(inf.img.img_ptr, &inf.img.bpp, &inf.img.size_line, &inf.img.endian);
+	inf.g_img.img_ptr = mlx_new_image(inf.mlx, 1501, pd.max_height * tile_size);
+	inf.g_img.adrr = mlx_get_data_addr(inf.g_img.img_ptr, &inf.g_img.bpp, &inf.g_img.size_line, &inf.g_img.endian);
 	m_fill(&inf, pd);
 	put_player(&inf, &pd, 1);
-	// put_lines(&inf, pd);
 	// inf.fov = 5;
+	// inf.fov = 0;
 	inf.ray = inf.fov - 30;
 	inf.index = 0;
+	// inf.fov = 0;
 	while (inf.ray <= inf.fov + 30)
 	{
 		h_intersections(&inf);
 		v_intersections(&inf);
 		calc_col_dis(&inf);
 		ray(&inf, deg_to_rad(inf.ray), inf.pd, 1);
-		inf.ray += 0.5;
+		inf.ray += 0.04;
 		inf.index++;
-		printf("index =%d\n", inf.index);
+		// printf("index =%d\n", inf.index);
 
 	}
-	mlx_hook(inf.win_ptr, 2, 0, key_hook, &inf);
+	draw_sma_wlard(&inf);
+	render_3d(&inf);
+	mlx_put_image_to_window(inf.mlx, inf.win_ptr, inf.g_img.img_ptr, 0, 0);
 	mlx_put_image_to_window(inf.mlx, inf.win_ptr, inf.img.img_ptr, 0, 0);
+	mlx_hook(inf.win_ptr, 2, 0, key_hook, &inf);
 	mlx_loop(inf.mlx);
 }
