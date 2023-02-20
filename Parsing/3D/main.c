@@ -334,31 +334,30 @@ void    calc_col_dis(t_inf *inf)
 			inf->rays[inf->index].col_dist = sqrt(inf->rays[inf->index].col_dist);
 			inf->flag = 0;
 			inf->rays[inf->index].h_v = 2;
-			// inf->rays[inf->index].hitV = 0;
 		}
 		else
 		{
 			inf->rays[inf->index].col_dist = ((inf->h.i - inf->p.i) * (inf->h.i - inf->p.i)) + ((inf->h.j - inf->p.j) * (inf->h.j - inf->p.j));
 			inf->rays[inf->index].col_dist = sqrt(inf->rays[inf->index].col_dist);
 			inf->rays[inf->index].h_v = 1;
-			// inf->rays[inf->index].hitH = 0;
 			inf->flag = 0;
 		}
 	}
 	else
 	{
-	// printf("this is the v_flag !!= %d\n", inf->v.flag);
 		d_h = ((inf->h.i - inf->p.i) * (inf->h.i - inf->p.i)) + ((inf->h.j - inf->p.j) * (inf->h.j - inf->p.j));
 		d_h = sqrt(d_h);
 		d_v = ((inf->v.i - inf->p.i) * (inf->v.i - inf->p.i)) + ((inf->v.j - inf->p.j) * (inf->v.j - inf->p.j));
 		d_v = sqrt(d_v);
 		inf->rays[inf->index].col_dist = min(d_h, d_v);
-		// printf("%d\n", (int)inf->rays[inf->index].col_dist);
 		if (inf->rays[inf->index].col_dist == d_h)
+		{
+			inf->rays[inf->index].x = fmod(inf->h.i, tile_size);
 			inf->rays[inf->index].h_v = 1;
+		}
 		else
 		{
-			printf("went here\n");
+			inf->rays[inf->index].x = fmod(inf->v.j, tile_size);
 			inf->rays[inf->index].h_v = 2;
 		}
 	}

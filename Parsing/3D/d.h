@@ -30,6 +30,7 @@ typedef struct s_rays
 	double  col_dist;
 	int		flag;
 	double  rayAngle;
+	int		x;
 	int		h_v;
 }	t_rays;
 
