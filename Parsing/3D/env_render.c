@@ -8,13 +8,13 @@ void    put_lines(t_inf *inf, t_pd pd)
 
 	i = tile_size;
 	j = tile_size;
-	while (i < tile_size * pd.max_width)
+	while (i < pd.max_width * tile_size)
 	{
 		j = tile_size;
 		while (j < tile_size * pd.max_height)
 		{
 			if (!(j % tile_size) || !(i % tile_size))
-				my_mlx_pixel_put(inf, i, j, create_trgb(100, 32, 32, 32));
+				my_mlx_pixel_put(&inf->mini_map, i, j, create_trgb(100, 32, 32, 32), 1);
 			j++;
 		}
 		i++;
@@ -23,6 +23,7 @@ void    put_lines(t_inf *inf, t_pd pd)
 
 void    set_fov(char player, t_inf *inf)
 {
+	// inf->fov = 0;
 	if (player == 'N')
 		inf->fov = 90;
 	else if (player == 'S')
@@ -53,9 +54,9 @@ void    put_player(t_inf *inf, t_pd *pd, int m)
 			{
 				set_fov(pd->map[j][i], inf);
 				i = i * tile_size;
-				inf->pi = i;
+				inf->p.i = i;
 				j = j * tile_size;
-				inf->pj = j;
+				inf->p.j = j;
 				f = 1;
 				break;
 			}
@@ -65,17 +66,17 @@ void    put_player(t_inf *inf, t_pd *pd, int m)
 			break;
 		j++;
 	}
-	t = inf->pi;
-	t2 = inf->pj;
+	t = inf->p.i;
+	t2 = inf->p.j;
 	while (j < pd->max_height * tile_size && j < t2 + 5)
 	{
 		i = t;
 		while (i < pd->max_width * tile_size && i < t + 5)
 		{
 			if (m)
-				my_mlx_pixel_put(inf, i, j, create_trgb(0, 255, 0, 0));
+				my_mlx_pixel_put(&inf->mini_map, i , j, create_trgb(0, 255, 0, 0), 1);
 			else
-				my_mlx_pixel_put(inf, i, j, create_trgb(0, 192, 192, 192));
+				my_mlx_pixel_put(&inf->mini_map, i , j, create_trgb(0, 192, 192, 192), 1);
 			i++;
 		}
 		j++;
@@ -99,25 +100,66 @@ void    put_point(t_inf *inf, double i, double j, int m)
 		while (y < j + 3)
 		{
 			if (m == 1)
-				my_mlx_pixel_put(inf, x, y, create_trgb(0, 0, 255, 0));
+				my_mlx_pixel_put(&inf->mini_map, x, y, create_trgb(0, 0, 255, 0), 1);
 			else
-				my_mlx_pixel_put(inf, x, y, create_trgb(0, 255, 0, 0));
+				my_mlx_pixel_put(&inf->mini_map, x, y, create_trgb(0, 255, 0, 0), 1);
 			y++;
 		}
 		x++;
 	}
 }
 
+// void	Background(t_inf *data, int color)
+// {
+// 	int y = 0;
+// 	while (y < data->pd->max_height * tile_size)
+// 	{
+// 		int x = 0;
+// 		while (x < 1501)
+// 		{
+// 			my_mlx_pixel_put(&data->frame, x, y, color, 0);
+// 			x++;
+// 		}
+// 		y++;
+// 	}
+// }
+
 void	castAllRays(t_inf *inf, int m)
 {
-	int		i;
-	double	fov;
-
-	i = -1;
-	fov = inf->fov - 30;
-	while (++i < inf->pd->max_width)
+	inf->ray = inf->fov - 30;
+	inf->index = 0;
+	// inf->v.flag = 0;
+	// inf->h.flag = 0;
+	while (inf->ray <= inf->fov + 30)
 	{
-		ray(inf, fov, inf->pd, m);
-		fov += 0.0333;
+		if (m)
+		{
+			h_intersections(inf);
+			v_intersections(inf);
+			// if (inf->h.flag == -1)
+			// 	printf("flag = %d\n", inf->h.flag);
+			// if (inf->v.flag == -1)
+			// printf("flag = %d\n", inf->v.flag);
+			// if (inf->v.flag == 0)
+			// 	printf("index =%d\n", inf->index);
+			calc_col_dis(inf);
+		}
+		ray(inf, deg_to_rad(inf->ray), inf->pd, m);
+		inf->ray += 0.04;
+		inf->index++;
 	}
+}
+
+void	launch(t_inf *inf)
+{
+	// inf->v.flag = 0;
+	// inf->h.flag = 0;
+	m_fill(inf, *inf->pd);
+	put_player(inf, inf->pd, 1);
+	castAllRays(inf, 1);
+	// Background(inf, Black);
+	draw_sma_wlard(inf);
+	render_3d(inf);
+	mlx_put_image_to_window(inf->mlx, inf->win_ptr, inf->frame.img_ptr, 0, 0);
+	mlx_put_image_to_window(inf->mlx, inf->win_ptr, inf->mini_map.img_ptr, 0, 0);
 }

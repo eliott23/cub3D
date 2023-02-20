@@ -1,4 +1,4 @@
-F 111,1,111 
+F 160,160,160 
 
 SO ./textures/mossy.xpm
 EA ./textures/mossy.xpm
@@ -6,7 +6,7 @@ NO ./textures/greystone_dark.xpm
 WE ./textures/greystone.xpm 
  
 
-C 255,100,160      
+C 0,204,204
 
 
 
