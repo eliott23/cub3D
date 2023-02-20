@@ -368,9 +368,6 @@ void    redisplay_view(t_inf *inf, int keycode)
 		inf->ray += 0.04;
 		inf->index++;
 	}
-		// mlx_destroy_image(inf->mlx, inf->g_img.img_ptr);
-		// inf->g_img.img_ptr = mlx_new_image(inf->mlx, 1501, inf->pd->max_height * tile_size);
-		// inf->g_img.adrr = mlx_get_data_addr(inf->g_img.img_ptr, &inf->g_img.bpp, &inf->g_img.size_line, &inf->g_img.endian);
 		draw_sma_wlard(inf);
 		render_3d(inf);
 		mlx_put_image_to_window(inf->mlx, inf->win_ptr, inf->g_img.img_ptr, 0, 0);
