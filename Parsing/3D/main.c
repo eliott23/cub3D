@@ -49,7 +49,6 @@ void    render_3d(t_inf *inf)
 {
 	int i, j;
 	double distanceProjPlane = (1500 / 2) / tan(deg_to_rad(60 / 2));
-	// double distanceProjPlane = 200;
 	double projectionWallHeight;
 	double topPixel;
 	double bottomPixel;
