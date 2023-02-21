@@ -43,11 +43,20 @@ typedef struct s_img
 	int		endian;
 } t_img;
 
+typedef struct s_xmp
+{
+	t_img	img;
+	int		width;
+	int		height;
+	char	*type;
+}	t_xpm;
+
 typedef struct inf{
 	void    *win_ptr;
 	void    *mlx;
 	t_img   mini_map;
 	t_img   frame;
+	t_xpm	*node;
 	t_index	p;
 	t_index	h;
 	t_index	v;

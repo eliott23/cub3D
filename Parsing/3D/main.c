@@ -17,6 +17,18 @@ void	my_mlx_pixel_put(t_img *img, int x, int y, int color, int mode)
 	*(unsigned int *)pixel = color;
 }
 
+int	get_pixel(t_inf *inf, int i, int y)
+{
+	int		offset;
+	char	*pixel;
+
+	// printf("this is x %d\n", inf->rays[i].x);
+	offset = y * inf->node->img.size_line + (inf->rays[i].x) * (inf->node->img.bpp / 8);
+	// printf("this is offset %d\n", offset);
+	pixel = inf->node->img.adrr + offset;
+	return (*(int *)pixel);
+}
+
 void	draw_sma_wlard(t_inf *inf)
 {
 	int	i;
@@ -45,6 +57,47 @@ void	draw_sma_wlard(t_inf *inf)
 	}
 }
 
+// void    render_3d(t_inf *inf)
+// {
+// 	int i, j;
+// 	double distanceProjPlane = (1500 / 2) / tan(deg_to_rad(60 / 2));
+// 	double projectionWallHeight;
+// 	double topPixel;
+// 	double bottomPixel;
+// 	int		color = create_trgb(0, 0, 0, 0);
+// 	int deb_color = create_trgb(0, 255, 255, 255);
+// 	int		max_height = inf->pd->max_height * tile_size;
+// 	i = 0;
+// 	while (i < 1501)
+// 	{
+// 		projectionWallHeight = (tile_size / (inf->rays[i].col_dist)) * distanceProjPlane;
+// 		topPixel = (max_height / 2) - (projectionWallHeight / 2);
+// 		bottomPixel = (max_height / 2) + (projectionWallHeight / 2);
+// 		if (topPixel < 0)
+// 			topPixel = 0;
+// 		if (bottomPixel > max_height)
+// 			bottomPixel = max_height;
+// 		j = -1;
+// 		while (++j < topPixel)
+// 			my_mlx_pixel_put(&inf->frame, i, j, White, 0);
+// 		j = topPixel;
+// 		while (j < bottomPixel)
+// 		{
+// 			if (projectionWallHeight > 1501)
+// 				my_mlx_pixel_put(&inf->frame, i, topPixel, get_pixel(inf, i, \
+// 					((int)(round((i + (projectionWallHeight - 1501) / 2.0) * (64.0 / projectionWallHeight))) % 64)), 0);
+// 			else
+// 				my_mlx_pixel_put(&inf->frame, i, topPixel, get_pixel(inf, i, \
+// 					(int)round((int)((double)(j - topPixel) * (64.0 / projectionWallHeight)))), 0);
+// 			j++;
+// 		}
+// 		j = bottomPixel - 1;
+// 		while (++j < max_height)
+// 			my_mlx_pixel_put(&inf->frame, i, j, Black, 0);
+// 		i++;
+// 	}
+// }
+
 void    render_3d(t_inf *inf)
 {
 	int i, j;
@@ -55,6 +108,7 @@ void    render_3d(t_inf *inf)
 	int		color = create_trgb(0, 0, 0, 0);
 	int deb_color = create_trgb(0, 255, 255, 255);
 	int		max_height = inf->pd->max_height * tile_size;
+	double		t = 0;
 	i = 0;
 	while (i < 1501)
 	{
@@ -65,16 +119,18 @@ void    render_3d(t_inf *inf)
 			topPixel = 0;
 		if (bottomPixel > max_height)
 			bottomPixel = max_height;
+		t = topPixel;
 		while (topPixel < bottomPixel)
 		{
-			if (inf->rays[i].h_v == 1)
-			{
-				my_mlx_pixel_put(&inf->frame, i, topPixel, color, 0);
-			}
-			else
-			{
-				my_mlx_pixel_put(&inf->frame, i, topPixel, deb_color, 0);
-			}
+			// if (inf->rays[i].h_v == 1)
+			// {
+			// printf("this is the y %f\n" , ((topPixel - t) * 64) / projectionWallHeight);
+			my_mlx_pixel_put(&inf->frame, i, topPixel, get_pixel(inf, i, (int)(((topPixel - t) * 64) / projectionWallHeight)), 0);
+			// }
+			// else
+			// {
+			// 	my_mlx_pixel_put(&inf->frame, i, topPixel, deb_color, 0);
+			// }
 			topPixel++;
 		}
 		i++;
@@ -245,7 +301,7 @@ int check_points_v(double i, double j, t_pd *pd, t_inf *inf)
 	}
 	if ((int)round(i) == tile_size || pd->map[y][x] == '1' || pd->map[y][x] == ' ' || !pd->map[y][x])
 	{
-		// put_point(inf, i, j, 2);
+		// put_point(inf, i, j,;
 		inf->v = (t_index) {i, j};
 		return (0);
 	}
@@ -336,6 +392,7 @@ void    calc_col_dis(t_inf *inf)
 			inf->rays[inf->index].col_dist = sqrt(inf->rays[inf->index].col_dist);
 			inf->flag = 0;
 			inf->rays[inf->index].h_v = 2;
+			inf->rays[inf->index].x = fmod(inf->v.j, tile_size);
 		}
 		else
 		{
@@ -343,6 +400,7 @@ void    calc_col_dis(t_inf *inf)
 			inf->rays[inf->index].col_dist = sqrt(inf->rays[inf->index].col_dist);
 			inf->rays[inf->index].h_v = 1;
 			inf->flag = 0;
+			inf->rays[inf->index].x = fmod(inf->h.i, tile_size);
 		}
 	}
 	else
@@ -365,17 +423,13 @@ void    calc_col_dis(t_inf *inf)
 	}
 }
 
-void	check_collisions(t_inf *inf)
-{
-
-}
 
 int	key_hook(int keycode, t_inf *inf)
 {
 	double  new_i;
 	double  new_j;
 
-	if (keycode == 126)
+	if (keycode == 13)
 	{
 		new_i = inf->p.i + (8 * cos(deg_to_rad(inf->fov)));
 		new_j = inf->p.j + (8 * sin(deg_to_rad(inf->fov)));
@@ -385,7 +439,7 @@ int	key_hook(int keycode, t_inf *inf)
 		inf->pd->map[(int)(new_j / tile_size)][(int)(new_i / tile_size)] != '1')
 			redisplay_move(new_i, new_j, inf, keycode);
 	}
-	if (keycode == 125)
+	if (keycode == 1)
 	{
 		new_i = inf->p.i - (8 * cos(deg_to_rad(inf->fov)));
 		new_j = inf->p.j - (8 * sin(deg_to_rad(inf->fov)));
@@ -397,8 +451,26 @@ int	key_hook(int keycode, t_inf *inf)
 		
 	}
 	if (keycode == 2)
-		redisplay_view(inf, keycode);
-	if (!keycode)
+	{
+		new_i = inf->p.i + (8 * cos(deg_to_rad(inf->fov + 90)));
+		new_j = inf->p.j + (8 * sin(deg_to_rad(inf->fov + 90)));
+		// if (inf->pd->map[(int)(new_j / tile_size)][(int)(new_i / tile_size)] != '1')
+		if (inf->pd->map[(int)(new_j / tile_size)][(int)(inf->p.i / tile_size)] != '1' &&\
+		inf->pd->map[(int)(inf->p.j / tile_size)][(int)(new_i / tile_size)] != 1 && \
+		inf->pd->map[(int)(new_j / tile_size)][(int)(new_i / tile_size)] != '1')
+			redisplay_move(new_i, new_j, inf, keycode);
+	}
+	if (keycode == 0)
+	{
+		new_i = inf->p.i - (8 * cos(deg_to_rad(inf->fov + 90)));
+		new_j = inf->p.j - (8 * sin(deg_to_rad(inf->fov + 90)));
+		// if (inf->pd->map[(int)(new_j / tile_size)][(int)(new_i / tile_size)] != '1')
+		if (inf->pd->map[(int)(new_j / tile_size)][(int)(inf->p.i / tile_size)] != '1' &&\
+		inf->pd->map[(int)(inf->p.j / tile_size)][(int)(new_i / tile_size)] != 1 && \
+		inf->pd->map[(int)(new_j / tile_size)][(int)(new_i / tile_size)] != '1')
+			redisplay_move(new_i, new_j, inf, keycode);
+	}
+	if (keycode == 123 || keycode == 124)
 		redisplay_view(inf, keycode);
 	return (0);
 }
@@ -407,7 +479,7 @@ void    redisplay_view(t_inf *inf, int keycode)
 {
 	mlx_clear_window(inf->mlx, inf->win_ptr);
 	castAllRays(inf, 0);
-	if (keycode == 2)
+	if (keycode == 124)
 		inf->fov += inf->step;
 	else
 		inf->fov -= inf->step;
@@ -443,6 +515,7 @@ int main(int ac, char **av)
 	inf->step = 5;
 	inf->flag = 0;
 	inf->rays = malloc(sizeof(t_rays) * (1501));
+	inf->node = malloc(sizeof(t_xpm));
 	// printf("this is the number of rays %d\n", (pd.max_height * tile_size) + 1);
 	// exit(0);
 	inf->mlx = mlx_init();
@@ -452,6 +525,8 @@ int main(int ac, char **av)
 	inf->mini_map.adrr = mlx_get_data_addr(inf->mini_map.img_ptr, &inf->mini_map.bpp, &inf->mini_map.size_line, &inf->mini_map.endian);
 	inf->frame.img_ptr = mlx_new_image(inf->mlx, 1501, pd.max_height * tile_size);
 	inf->frame.adrr = mlx_get_data_addr(inf->frame.img_ptr, &inf->frame.bpp, &inf->frame.size_line, &inf->frame.endian);
+	inf->node->img.img_ptr = mlx_xpm_file_to_image(inf->mlx, "../textures/mossy.xpm", &inf->node->width, &inf->node->height);
+	inf->node->img.adrr = mlx_get_data_addr(inf->node->img.img_ptr, &inf->node->img.bpp, &inf->node->img.size_line, &inf->node->img.endian);
 	launch(inf);
 	mlx_hook(inf->win_ptr, 2, 0, key_hook, inf);
 	mlx_loop(inf->mlx);
