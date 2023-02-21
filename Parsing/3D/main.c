@@ -52,8 +52,8 @@ void    render_3d(t_inf *inf)
 	double projectionWallHeight;
 	double topPixel;
 	double bottomPixel;
-	int		color = create_trgb(0, 0, 0, 255);
-	int deb_color = create_trgb(0, 255, 0, 0);
+	int		color = create_trgb(0, 0, 0, 0);
+	int deb_color = create_trgb(0, 255, 255, 255);
 	int		max_height = inf->pd->max_height * tile_size;
 	i = 0;
 	while (i < 1501)
