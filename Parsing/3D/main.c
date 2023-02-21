@@ -109,9 +109,11 @@ void    render_3d(t_inf *inf)
 	int deb_color = create_trgb(0, 255, 255, 255);
 	int		max_height = inf->pd->max_height * tile_size;
 	double		t = 0;
+	int			zoom = 0;
 	i = 0;
 	while (i < 1501)
 	{
+		// printf("%d\n", i);
 		projectionWallHeight = (tile_size / (inf->rays[i].col_dist)) * distanceProjPlane;
 		topPixel = (max_height / 2) - (projectionWallHeight / 2);
 		bottomPixel = (max_height / 2) + (projectionWallHeight / 2);
@@ -125,7 +127,9 @@ void    render_3d(t_inf *inf)
 			// if (inf->rays[i].h_v == 1)
 			// {
 			// printf("this is the y %f\n" , ((topPixel - t) * 64) / projectionWallHeight);
-			my_mlx_pixel_put(&inf->frame, i, topPixel, get_pixel(inf, i, (int)(((topPixel - t) * 64) / projectionWallHeight)), 0);
+			// printf("%d\n",(int)(((topPixel + (projectionWallHeight / 2) - (max_height / 2)) * (64 / projectionWallHeight))));
+			// 	printf("yep\n");
+			my_mlx_pixel_put(&inf->frame, i, topPixel, get_pixel(inf, i, (int)(((topPixel + (projectionWallHeight / 2) - (max_height / 2)) * 64) / projectionWallHeight)), 0);
 			// }
 			// else
 			// {
@@ -477,7 +481,7 @@ int	key_hook(int keycode, t_inf *inf)
 
 void    redisplay_view(t_inf *inf, int keycode)
 {
-	mlx_clear_window(inf->mlx, inf->win_ptr);
+	// mlx_clear_window(inf->mlx, inf->win_ptr);
 	castAllRays(inf, 0);
 	if (keycode == 124)
 		inf->fov += inf->step;
@@ -493,7 +497,7 @@ void    redisplay_view(t_inf *inf, int keycode)
 void    redisplay_move(double new_i, double new_j, t_inf *inf, int keycode)
 {
 
-	mlx_clear_window(inf->mlx, inf->win_ptr);
+	// mlx_clear_window(inf->mlx, inf->win_ptr);
 	castAllRays(inf, 0);
 	inf->p.i = new_i;
 	inf->p.j = new_j;
