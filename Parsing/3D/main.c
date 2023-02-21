@@ -158,7 +158,7 @@ int check_square(t_inf *inf, int x, int y, double i, double j, int m)
 		inf->flag = -2; //check description in the check_point_v() function;
 		return (0);
 	}
-	if ((int)round(i) == tile_size || (int)round(j) == tile_size || inf->pd->map[y][x] == '1' || !inf->pd->map[y][x])//check spaces
+	if ((int)i == tile_size || (int)j == tile_size || inf->pd->map[y][x] == '1' || !inf->pd->map[y][x])//check spaces
 	{
 		if (m == 1)
 			inf->h = (t_index) {i, j};
@@ -174,8 +174,8 @@ int checK_four_squares(t_inf *inf , double i, double j, int m)
 	int x;
 	int y;
 
-	x = (int)((round(i) / tile_size));
-	y = (int)((round(j) / tile_size));
+	x = (int)((i / tile_size));
+	y = (int)((j / tile_size));
 	if (!check_square(inf, x, y, i, j, m))
 		return (0);
 	if (!check_square(inf, x - 1, y, i, j, m))
@@ -194,25 +194,27 @@ int check_points_h(double i, double j, t_pd *pd, t_inf *inf)
 	int y;
 	int x;
 
-	x = (int)((round(i) / tile_size));
+	x = (int)((i / tile_size));
 	dir = sign_of(sin(deg_to_rad(inf->ray)));
 	if (dir < 0)
-		y = (int)(round(j) / tile_size) - 1;
+		y = (int)(j / tile_size) - 1;
 	else
-		y = (int)(round(j) / tile_size);
+		y = (int)(j / tile_size);
 	if (y < 0 || x < 0 || y > pd->max_height ||\
 	x > ft_len(pd->map[y]))
 	{
 		inf->flag = -2; //check description in the check_point_v() function;
 		return (0);
 	}
-	if ((int)round(i) == tile_size || (int)round(j) == tile_size || pd->map[y][x] == '1' || pd->map[y][x] == ' ' || !pd->map[y][x])
+	if ((int)round(j) == tile_size || pd->map[y][x] == '1' || pd->map[y][x] == ' ' || !pd->map[y][x])
 	{
 		// put_point(inf, i, j, 1);
+		// if ((int)round(i) == tile_size)
+		// 	inf->flag = -1;
 		inf->h = (t_index) {i, j};
 		return (0);
 	}
-	if (!fmod(round(i), tile_size) && !fmod(round(j), tile_size))
+	if (!fmod(i, tile_size) && !fmod(j, tile_size))
 	{ 
 		inf->h.flag = -1;
 		return (checK_four_squares(inf, i, j, 1));
@@ -226,13 +228,13 @@ int check_points_v(double i, double j, t_pd *pd, t_inf *inf)
 	double r;
 	int x;
 
-	int y = (int)((round(j) / tile_size));
+	int y = (int)((j / tile_size));
 
 	dir = sign_of(cos(deg_to_rad(inf->ray)));
 	if (dir < 0)
-		x = (int)(round(i) / tile_size) - 1;
+		x = (int)(i / tile_size) - 1;
 	else
-		x = (int)(round(i) / tile_size);
+		x = (int)(i / tile_size);
 	if (y < 0 || x < 0 || y > pd->max_height ||\
 	x > ft_len(pd->map[y]) )
 	{
@@ -241,13 +243,13 @@ int check_points_v(double i, double j, t_pd *pd, t_inf *inf)
 						//then ofc reset the flag to 0 after every time we check it;
 		return (0);
 	}
-	if ((int)round(i) == tile_size || (int)round(j) == tile_size || pd->map[y][x] == '1' || pd->map[y][x] == ' ' || !pd->map[y][x])
+	if ((int)round(i) == tile_size || pd->map[y][x] == '1' || pd->map[y][x] == ' ' || !pd->map[y][x])
 	{
 		// put_point(inf, i, j, 2);
 		inf->v = (t_index) {i, j};
 		return (0);
 	}
-	if (!fmod(round(i), tile_size) && !fmod(round(j), tile_size))
+	if (!fmod(i, tile_size) && !fmod(j, tile_size))
 	{
 		inf->v.flag = -1;
 		return (checK_four_squares(inf, i, j, 2));
@@ -363,6 +365,11 @@ void    calc_col_dis(t_inf *inf)
 	}
 }
 
+void	check_collisions(t_inf *inf)
+{
+
+}
+
 int	key_hook(int keycode, t_inf *inf)
 {
 	double  new_i;
@@ -372,6 +379,7 @@ int	key_hook(int keycode, t_inf *inf)
 	{
 		new_i = inf->p.i + (8 * cos(deg_to_rad(inf->fov)));
 		new_j = inf->p.j + (8 * sin(deg_to_rad(inf->fov)));
+		// if (inf->pd->map[(int)(new_j / tile_size)][(int)(new_i / tile_size)] != '1')
 		if (inf->pd->map[(int)(new_j / tile_size)][(int)(inf->p.i / tile_size)] != '1' &&\
 		inf->pd->map[(int)(inf->p.j / tile_size)][(int)(new_i / tile_size)] != 1 && \
 		inf->pd->map[(int)(new_j / tile_size)][(int)(new_i / tile_size)] != '1')
@@ -381,6 +389,7 @@ int	key_hook(int keycode, t_inf *inf)
 	{
 		new_i = inf->p.i - (8 * cos(deg_to_rad(inf->fov)));
 		new_j = inf->p.j - (8 * sin(deg_to_rad(inf->fov)));
+		// if (inf->pd->map[(int)(new_j / tile_size)][(int)(new_i / tile_size)] != '1')
 		if (inf->pd->map[(int)(new_j / tile_size)][(int)(inf->p.i / tile_size)] != '1' &&\
 		inf->pd->map[(int)(inf->p.j / tile_size)][(int)(new_i / tile_size)] != 1 && \
 		inf->pd->map[(int)(new_j / tile_size)][(int)(new_i / tile_size)] != '1')
@@ -439,6 +448,7 @@ int main(int ac, char **av)
 	inf->mlx = mlx_init();
 	inf->win_ptr = mlx_new_window(inf->mlx, 1501, pd.max_height * tile_size, "cub3d");
 	inf->mini_map.img_ptr = mlx_new_image(inf->mlx, (pd.max_width * tile_size) / 6, (pd.max_height * tile_size) / 6); // minimap dimensions and drawing conditions to be checked later
+	// inf->mini_map.img_ptr = mlx_new_image(inf->mlx, (pd.max_width * tile_size) , (pd.max_height * tile_size)); // minimap dimensions and drawing conditions to be checked later
 	inf->mini_map.adrr = mlx_get_data_addr(inf->mini_map.img_ptr, &inf->mini_map.bpp, &inf->mini_map.size_line, &inf->mini_map.endian);
 	inf->frame.img_ptr = mlx_new_image(inf->mlx, 1501, pd.max_height * tile_size);
 	inf->frame.adrr = mlx_get_data_addr(inf->frame.img_ptr, &inf->frame.bpp, &inf->frame.size_line, &inf->frame.endian);
