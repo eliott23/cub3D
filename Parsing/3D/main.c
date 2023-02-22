@@ -114,7 +114,10 @@ void    render_3d(t_inf *inf)
 	while (i < 1501)
 	{
 		// printf("%d\n", i);
-		projectionWallHeight = (tile_size / (inf->rays[i].col_dist)) * distanceProjPlane;
+		if (inf->rays[i].col_dist)
+			projectionWallHeight = (tile_size / (inf->rays[i].col_dist)) * distanceProjPlane;
+		else
+			projectionWallHeight = 20000;
 		topPixel = (max_height / 2) - (projectionWallHeight / 2);
 		bottomPixel = (max_height / 2) + (projectionWallHeight / 2);
 		if (topPixel < 0)
@@ -122,6 +125,7 @@ void    render_3d(t_inf *inf)
 		if (bottomPixel > max_height)
 			bottomPixel = max_height;
 		t = topPixel;
+		// printf("%f\n", projectionWallHeight);
 		while (topPixel < bottomPixel)
 		{
 			// if (inf->rays[i].h_v == 1)
@@ -260,8 +264,8 @@ int check_points_h(double i, double j, t_pd *pd, t_inf *inf)
 		y = (int)(j / tile_size) - 1;
 	else
 		y = (int)(j / tile_size);
-	if (y < 0 || x < 0 || y > pd->max_height ||\
-	x > ft_len(pd->map[y]))
+	if (y < 0 || x < 0 || y >= pd->max_height ||\
+	x >= ft_len(pd->map[y]))
 	{
 		inf->flag = -2; //check description in the check_point_v() function;
 		return (0);
@@ -295,8 +299,8 @@ int check_points_v(double i, double j, t_pd *pd, t_inf *inf)
 		x = (int)(i / tile_size) - 1;
 	else
 		x = (int)(i / tile_size);
-	if (y < 0 || x < 0 || y > pd->max_height ||\
-	x > ft_len(pd->map[y]) )
+	if (y < 0 || x < 0 || y >= pd->max_height ||\
+	x >= ft_len(pd->map[y]))
 	{
 		inf->flag = -1; //kandiro hadafor flaging a point that is outside the map\
 						so that we could ignore the distance of this collision later (-1 for vertical and -2 for horiizontal);
@@ -427,6 +431,18 @@ void    calc_col_dis(t_inf *inf)
 	}
 }
 
+// int	check_collision(double new_i, double new_j, int m)
+// {
+
+// 	if (inf->pd->map[(int)(new_j / tile_size)][(int)(inf->p.i / tile_size)] != '1' &&\
+// 	inf->pd->map[(int)(inf->p.j / tile_size)][(int)(new_i / tile_size)] != 1 && \
+// 	inf->pd->map[(int)(new_j / tile_size)][(int)(new_i / tile_size)] != '1')
+// 	{
+// 			return (1);
+// 	}
+// 	else
+// 		return (0);
+// }
 
 int	key_hook(int keycode, t_inf *inf)
 {
@@ -435,29 +451,37 @@ int	key_hook(int keycode, t_inf *inf)
 
 	if (keycode == 13)
 	{
-		new_i = inf->p.i + (8 * cos(deg_to_rad(inf->fov)));
-		new_j = inf->p.j + (8 * sin(deg_to_rad(inf->fov)));
+		new_i = inf->p.i + (11 * cos(deg_to_rad(inf->fov)));
+		new_j = inf->p.j + (11 * sin(deg_to_rad(inf->fov)));
+		// printf("p_i = %f\np_j = %f\n", inf->p.i, inf->p.j);
+		// printf("new_i = %f\nnew_j =%f\n", new_i, new_j);
 		// if (inf->pd->map[(int)(new_j / tile_size)][(int)(new_i / tile_size)] != '1')
 		if (inf->pd->map[(int)(new_j / tile_size)][(int)(inf->p.i / tile_size)] != '1' &&\
 		inf->pd->map[(int)(inf->p.j / tile_size)][(int)(new_i / tile_size)] != 1 && \
 		inf->pd->map[(int)(new_j / tile_size)][(int)(new_i / tile_size)] != '1')
+		{
 			redisplay_move(new_i, new_j, inf, keycode);
+		}
 	}
 	if (keycode == 1)
 	{
-		new_i = inf->p.i - (8 * cos(deg_to_rad(inf->fov)));
-		new_j = inf->p.j - (8 * sin(deg_to_rad(inf->fov)));
+		new_i = inf->p.i - (11 * cos(deg_to_rad(inf->fov)));
+		new_j = inf->p.j - (11 * sin(deg_to_rad(inf->fov)));
+		// printf("p_i = %f\np_j = %f\n", inf->p.i, inf->p.j);
+		// printf("new_i = %f\nnew_j = %f\n", new_i, new_j);
 		// if (inf->pd->map[(int)(new_j / tile_size)][(int)(new_i / tile_size)] != '1')
 		if (inf->pd->map[(int)(new_j / tile_size)][(int)(inf->p.i / tile_size)] != '1' &&\
 		inf->pd->map[(int)(inf->p.j / tile_size)][(int)(new_i / tile_size)] != 1 && \
 		inf->pd->map[(int)(new_j / tile_size)][(int)(new_i / tile_size)] != '1')
 			redisplay_move(new_i, new_j, inf, keycode);
-		
 	}
 	if (keycode == 2)
 	{
 		new_i = inf->p.i + (8 * cos(deg_to_rad(inf->fov + 90)));
 		new_j = inf->p.j + (8 * sin(deg_to_rad(inf->fov + 90)));
+		// printf("p_i = %f\np_j = %f\n", inf->p.i, inf->p.j);
+		// printf("new_i = %f\nnew_j = %f\n", new_i, new_j);
+		// if (!fmod(new_i, tile_size) || !fmod(new_i, new_j))
 		// if (inf->pd->map[(int)(new_j / tile_size)][(int)(new_i / tile_size)] != '1')
 		if (inf->pd->map[(int)(new_j / tile_size)][(int)(inf->p.i / tile_size)] != '1' &&\
 		inf->pd->map[(int)(inf->p.j / tile_size)][(int)(new_i / tile_size)] != 1 && \
@@ -468,11 +492,15 @@ int	key_hook(int keycode, t_inf *inf)
 	{
 		new_i = inf->p.i - (8 * cos(deg_to_rad(inf->fov + 90)));
 		new_j = inf->p.j - (8 * sin(deg_to_rad(inf->fov + 90)));
+		// printf("p_i = %f\np_j = %f\n", inf->p.i, inf->p.j);
+		// printf("new_i = %f\nnew_j = %f\n", new_i, new_j);
 		// if (inf->pd->map[(int)(new_j / tile_size)][(int)(new_i / tile_size)] != '1')
 		if (inf->pd->map[(int)(new_j / tile_size)][(int)(inf->p.i / tile_size)] != '1' &&\
 		inf->pd->map[(int)(inf->p.j / tile_size)][(int)(new_i / tile_size)] != 1 && \
 		inf->pd->map[(int)(new_j / tile_size)][(int)(new_i / tile_size)] != '1')
+		{
 			redisplay_move(new_i, new_j, inf, keycode);
+		}
 	}
 	if (keycode == 123 || keycode == 124)
 		redisplay_view(inf, keycode);
