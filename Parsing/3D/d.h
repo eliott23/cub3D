@@ -48,7 +48,6 @@ typedef struct s_xmp
 	t_img	img;
 	int		width;
 	int		height;
-	char	*type;
 }	t_xpm;
 
 typedef struct inf{
@@ -56,7 +55,7 @@ typedef struct inf{
 	void    *mlx;
 	t_img   mini_map;
 	t_img   frame;
-	t_xpm	*node;
+	t_xpm	*textures;
 	t_index	p;
 	t_index	h;
 	t_index	v;

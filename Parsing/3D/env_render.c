@@ -66,21 +66,6 @@ void    put_player(t_inf *inf, t_pd *pd, int m)
 			break;
 		j++;
 	}
-	t = inf->p.i;
-	t2 = inf->p.j;
-	while (j < pd->max_height * tile_size && j < t2 + 5)
-	{
-		i = t;
-		while (i < pd->max_width * tile_size && i < t + 5)
-		{
-			if (m)
-				my_mlx_pixel_put(&inf->mini_map, i , j, create_trgb(0, 255, 0, 0), 1);
-			else
-				my_mlx_pixel_put(&inf->mini_map, i , j, create_trgb(0, 192, 192, 192), 1);
-			i++;
-		}
-		j++;
-	}
 }
 
 void    put_point(t_inf *inf, double i, double j, int m)
@@ -145,6 +130,7 @@ void	castAllRays(t_inf *inf, int m)
 			calc_col_dis(inf);
 		}
 		ray(inf, deg_to_rad(inf->ray), inf->pd, m);
+		inf->rays[inf->index].rayAngle = inf->ray;
 		inf->ray += 0.04;
 		inf->index++;
 	}
@@ -156,9 +142,11 @@ void	launch(t_inf *inf)
 	// inf->h.flag = 0;
 	m_fill(inf, *inf->pd);
 	put_player(inf, inf->pd, 1);
+	inf->p.i += tile_size / 2;
+	inf->p.j += tile_size / 2;
 	castAllRays(inf, 1);
 	// Background(inf, Black);
-	draw_sma_wlard(inf);
+	// draw_sma_wlard(inf);
 	render_3d(inf);
 	mlx_put_image_to_window(inf->mlx, inf->win_ptr, inf->frame.img_ptr, 0, 0);
 	mlx_put_image_to_window(inf->mlx, inf->win_ptr, inf->mini_map.img_ptr, 0, 0);
