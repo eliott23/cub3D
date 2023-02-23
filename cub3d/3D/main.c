@@ -6,7 +6,7 @@
 /*   By: zait-che <zait-che@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/22 07:42:38 by zait-che          #+#    #+#             */
-/*   Updated: 2023/02/23 05:24:55 by zait-che         ###   ########.fr       */
+/*   Updated: 2023/02/23 05:44:32 by zait-che         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,7 +140,7 @@ int	main(int ac, char **av)
 	get_colors(inf, &pd);
 	inf->step = 5;
 	inf->flag = 0;
-	inf->rays = malloc(sizeof(t_rays) * (WIN_WIDTH));
+	inf->rays = malloc(sizeof(t_rays) * (WIN_WIDTH + 1));
 	inf->textures = malloc(sizeof(t_xpm) * 4);
 	inf->mlx = mlx_init();
 	if (!inf->mlx || !xpm_init(inf))
