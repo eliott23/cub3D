@@ -6,7 +6,7 @@
 /*   By: zait-che <zait-che@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/22 06:32:55 by zait-che          #+#    #+#             */
-/*   Updated: 2023/02/23 05:28:01 by zait-che         ###   ########.fr       */
+/*   Updated: 2023/02/23 08:26:23 by zait-che         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ void	left_right(int keycode, t_inf *inf, t_index new);
 int		key_hook(int keycode, t_inf *inf);
 void	redisplay_view(t_inf *inf, int keycode);
 void	redisplay_move(double new_i, double new_j, t_inf *inf);
+int		exit_game(void);
 
 /** ray casting **/
 
@@ -91,7 +92,7 @@ void	cast_all_rays(t_inf *inf, int m);
 void	render_3d(t_inf *inf);
 void	v_intersections(t_inf *inf);
 void	h_intersections(t_inf *inf);
-int		check_square(t_inf *inf, int x, int y, t_index i, int m);
+int		check_square(t_inf *inf, t_index j, t_index i, int m);
 int		check_four_squares(t_inf *inf, t_index i, int m);
 
 /** utils **/

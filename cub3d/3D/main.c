@@ -6,7 +6,7 @@
 /*   By: zait-che <zait-che@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/22 07:42:38 by zait-che          #+#    #+#             */
-/*   Updated: 2023/02/23 05:44:32 by zait-che         ###   ########.fr       */
+/*   Updated: 2023/02/23 08:31:20 by zait-che         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,7 @@ int	main(int ac, char **av)
 	inf->textures = malloc(sizeof(t_xpm) * 4);
 	inf->mlx = mlx_init();
 	if (!inf->mlx || !xpm_init(inf))
-		return (1);
+		exit (1);
 	inf->win_ptr = mlx_new_window(inf->mlx,
 			WIN_WIDTH, WIN_HEIGHT, "cub3d");
 	inf->frame.img_ptr = mlx_new_image(inf->mlx,
@@ -153,5 +153,6 @@ int	main(int ac, char **av)
 			&inf->frame.size_line, &inf->frame.endian);
 	launch(inf);
 	mlx_hook(inf->win_ptr, 2, 0, key_hook, inf);
+	mlx_hook(inf->win_ptr, 17, 0, exit_game, NULL);
 	mlx_loop(inf->mlx);
 }

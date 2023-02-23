@@ -6,7 +6,7 @@
 /*   By: zait-che <zait-che@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/22 06:42:58 by zait-che          #+#    #+#             */
-/*   Updated: 2023/02/23 07:19:27 by zait-che         ###   ########.fr       */
+/*   Updated: 2023/02/23 08:01:42 by zait-che         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,47 +25,6 @@ void	fill(char *s)
 			i ++;
 		}
 	}
-}
-
-void	ft_free(char *str, char **arr)
-{
-	int	i;
-
-	if (str)
-	{
-		free(str);
-		str = NULL;
-	}
-	if (arr)
-	{
-		i = -1;
-		while (arr[++i])
-			free(arr[i]);
-		free(arr);
-		arr = NULL;
-	}
-}
-
-int	check_filename(char *name, char *exte)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	while (name[i])
-		i++;
-	i -= 4;
-	if (i < 0)
-		return (0);
-	j = 0;
-	while (exte[j] && name[i] && exte[j] == name[i])
-	{
-		j++;
-		i++;
-	}
-	if (name[i] || exte[j])
-		return (0);
-	return (1);
 }
 
 char	*m_read(char *name)
@@ -143,23 +102,5 @@ t_pd	m_function(int ac, char **av)
 	check_elmnt_n(0, &pd, 0);
 	m_parsing(&pd);
 	mesure_dimensions(&pd);
-/* THIS SECTION WAS COMMENTED TO SILENCE ERRORS ABOUT NON-EXISTING FILES
-	fd = open(pd.no, O_RDONLY);
-	if (fd == -1)
-		f_perror();
-	close(fd);
-	fd = open(pd.so, O_RDONLY);
-	if (fd == -1)
-		f_perror();
-	close(fd);
-	fd = open(pd.ea, O_RDONLY);
-	if (fd == -1)
-		f_perror();
-	close(fd);
-	fd = open(pd.we, O_RDONLY);
-	if (fd == -1)
-		f_perror();
-	close(fd);
-*/
 	return (pd);
 }

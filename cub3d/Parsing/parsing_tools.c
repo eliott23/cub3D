@@ -6,7 +6,7 @@
 /*   By: zait-che <zait-che@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/22 06:58:30 by zait-che          #+#    #+#             */
-/*   Updated: 2023/02/23 04:07:54 by zait-che         ###   ########.fr       */
+/*   Updated: 2023/02/23 08:03:51 by zait-che         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,14 +117,6 @@ void	m_parsing(t_pd *pd)
 		pd->n++;
 		skip_to_next(0, pd);
 	}
-	while (pd->i_b[pd->i] == '\n' || pd->i_b[pd->i] == ' ')
-	{
-		if (pd->i_b[pd->i] == ' ')
-		{
-			if (!check_empty(&pd->i_b[pd->i]))
-				break ;
-		}
-		pd->i++;
-	}
+	m_parsing_heler(pd);
 	map_p(pd);
 }

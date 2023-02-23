@@ -6,14 +6,19 @@
 /*   By: zait-che <zait-che@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/22 08:34:34 by zait-che          #+#    #+#             */
-/*   Updated: 2023/02/22 11:53:56 by zait-che         ###   ########.fr       */
+/*   Updated: 2023/02/23 08:11:26 by zait-che         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "d.h"
 
-int	check_square(t_inf *inf, int x, int y, t_index i, int m)
+int	check_square(t_inf *inf, t_index j, t_index i, int m)
 {
+	int	x;
+	int	y;
+
+	x = (int)j.i;
+	y = (int)j.j;
 	if (y < 0 || x < 0 || y >= inf->pd->max_height
 		|| x >= ft_len(inf->pd->map[y]))
 	{
@@ -39,13 +44,13 @@ int	check_four_squares(t_inf *inf, t_index i, int m)
 
 	x = (int)((i.i / TILE_SIZE));
 	y = (int)((i.j / TILE_SIZE));
-	if (!check_square(inf, x, y, i, m))
+	if (!check_square(inf, (t_index){x, y}, i, m))
 		return (0);
-	if (!check_square(inf, x - 1, y, i, m))
+	if (!check_square(inf, (t_index){x - 1, y}, i, m))
 		return (0);
-	if (!check_square(inf, x, y - 1, i, m))
+	if (!check_square(inf, (t_index){x, y - 1}, i, m))
 		return (0);
-	if (!check_square(inf, x - 1, y - 1, i, m))
+	if (!check_square(inf, (t_index){x - 1, y - 1}, i, m))
 		return (0);
 	return (1);
 }

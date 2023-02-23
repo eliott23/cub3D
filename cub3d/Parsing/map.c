@@ -6,7 +6,7 @@
 /*   By: zait-che <zait-che@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/22 06:34:50 by zait-che          #+#    #+#             */
-/*   Updated: 2023/02/22 06:50:52 by zait-che         ###   ########.fr       */
+/*   Updated: 2023/02/23 08:16:13 by zait-che         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,19 +59,13 @@ void	check_newl(char *s)
 
 	i = 0;
 	if (check_empty(s))
-	{
-		fprintf(stderr, "empty line inside the map!\n");
 		f_perror();
-	}
 	while (s[i])
 	{
 		if (s[i] == '\n' && s[i + 1])
 		{
 			if (check_empty(s + i + 1))
-			{
-				fprintf(stderr, "empty line inside the map!\n");
 				f_perror();
-			}
 		}
 		i++;
 	}
