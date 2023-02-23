@@ -6,7 +6,7 @@
 /*   By: zait-che <zait-che@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/22 06:42:58 by zait-che          #+#    #+#             */
-/*   Updated: 2023/02/23 04:11:41 by zait-che         ###   ########.fr       */
+/*   Updated: 2023/02/23 07:19:27 by zait-che         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,28 @@ void	ft_free(char *str, char **arr)
 	}
 }
 
+int	check_filename(char *name, char *exte)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	while (name[i])
+		i++;
+	i -= 4;
+	if (i < 0)
+		return (0);
+	j = 0;
+	while (exte[j] && name[i] && exte[j] == name[i])
+	{
+		j++;
+		i++;
+	}
+	if (name[i] || exte[j])
+		return (0);
+	return (1);
+}
+
 char	*m_read(char *name)
 {
 	int		i;
@@ -54,6 +76,8 @@ char	*m_read(char *name)
 	char	*temp;
 	char	*temp2;
 
+	if (!check_filename(name, ".cub"))
+		return (0);
 	fd = open(name, O_RDONLY);
 	check_fd(fd);
 	i = 0;
@@ -110,7 +134,6 @@ void	mesure_dimensions(t_pd *pd)
 t_pd	m_function(int ac, char **av)
 {
 	t_pd	pd;
-	// int		fd;
 
 	if (ac != 2)
 		f_perror();

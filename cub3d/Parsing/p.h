@@ -6,7 +6,7 @@
 /*   By: zait-che <zait-che@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/22 06:50:58 by zait-che          #+#    #+#             */
-/*   Updated: 2023/02/22 07:27:31 by zait-che         ###   ########.fr       */
+/*   Updated: 2023/02/23 07:16:05 by zait-che         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ typedef struct pd
 	int		max_width;
 }	t_pd;
 
+int				check_filename(char *name, char *exte);
 t_pd			m_function(int ac, char **av);
 void			valid_rgb(char **rgb);
 long long int	ft_atoi(const char *str);
