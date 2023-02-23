@@ -6,7 +6,7 @@
 /*   By: zait-che <zait-che@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/22 06:54:29 by zait-che          #+#    #+#             */
-/*   Updated: 2023/02/22 06:58:22 by zait-che         ###   ########.fr       */
+/*   Updated: 2023/02/23 23:28:37 by zait-che         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	valid_rgb(char **rgb)
 	i = 0;
 	while (i < 3)
 	{
-		if (!rgb[i] || ft_atoi(rgb[i]) > 255)
+		if (!rgb[i] || ft_atoi(rgb[i]) > 255 || ft_atoi(rgb[i]) < 0)
 			f_perror();
 		i++;
 	}

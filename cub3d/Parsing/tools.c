@@ -6,7 +6,7 @@
 /*   By: zait-che <zait-che@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/22 07:17:49 by zait-che          #+#    #+#             */
-/*   Updated: 2023/02/22 09:05:48 by zait-che         ###   ########.fr       */
+/*   Updated: 2023/02/23 13:42:03 by zait-che         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,6 @@ char	*ft_strjoin(char *s1, char *s2)
 
 void	f_perror(void)
 {
-	printf("Error\n");
+	printf("Error:\nParsing error");
 	exit(0);
 }

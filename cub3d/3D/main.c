@@ -6,13 +6,11 @@
 /*   By: zait-che <zait-che@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/22 07:42:38 by zait-che          #+#    #+#             */
-/*   Updated: 2023/02/23 08:31:20 by zait-che         ###   ########.fr       */
+/*   Updated: 2023/02/23 23:02:50 by zait-che         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "d.h"
-
-//check later on m_hdouble	ain_lhouta(t_inf *inf, int i)
 
 void	render_3d(t_inf *inf)
 {

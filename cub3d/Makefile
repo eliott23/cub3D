@@ -6,7 +6,7 @@
 #    By: zait-che <zait-che@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/02/22 08:48:12 by zait-che          #+#    #+#              #
-#    Updated: 2023/02/23 11:11:43 by zait-che         ###   ########.fr        #
+#    Updated: 2023/02/23 13:50:58 by zait-che         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,7 +31,7 @@ $(NAME): $(MOBJ)
 	$(CC) $(CFLAGS) -Imlx -c $< -o $@
 
 clean:
-	$(RM) $(MOBJ) $(BOBJ)
+	$(RM) $(MOBJ)
 
 fclean:		clean
 			$(RM) $(NAME)

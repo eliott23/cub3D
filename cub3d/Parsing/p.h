@@ -6,7 +6,7 @@
 /*   By: zait-che <zait-che@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/22 06:50:58 by zait-che          #+#    #+#             */
-/*   Updated: 2023/02/23 08:03:36 by zait-che         ###   ########.fr       */
+/*   Updated: 2023/02/23 23:21:25 by zait-che         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,4 +59,5 @@ char			*ft_strjoin(char *s1, char *s2);
 int				is_player(char player);
 void			ft_free(char *str, char **arr);
 void			m_parsing_heler(t_pd *pd);
+void			check_xpm(t_pd *pd);
 #endif
