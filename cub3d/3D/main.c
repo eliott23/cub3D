@@ -6,7 +6,7 @@
 /*   By: zait-che <zait-che@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/22 07:42:38 by zait-che          #+#    #+#             */
-/*   Updated: 2023/02/23 04:38:41 by zait-che         ###   ########.fr       */
+/*   Updated: 2023/02/23 05:24:55 by zait-che         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@ void	render_3d(t_inf *inf)
 	int		m_h;
 
 	i.i = 0.0;
-	dis_pp = (1500 / 2) / tan(deg_to_rad(60 / 2));
-	m_h = inf->pd->max_height * TILE_SIZE;
-	while (i.i < 1500)
+	dis_pp = (WIN_WIDTH / 2) / tan(deg_to_rad(60 / 2));
+	m_h = WIN_HEIGHT;
+	while (i.i < WIN_WIDTH)
 	{
 		w_h = (TILE_SIZE / (inf->rays[(int)i.i].col_dist
 					* cos(deg_to_rad(inf->rays[(int)i.i].ray_angle - inf->fov)))
@@ -140,15 +140,15 @@ int	main(int ac, char **av)
 	get_colors(inf, &pd);
 	inf->step = 5;
 	inf->flag = 0;
-	inf->rays = malloc(sizeof(t_rays) * (1501));
+	inf->rays = malloc(sizeof(t_rays) * (WIN_WIDTH));
 	inf->textures = malloc(sizeof(t_xpm) * 4);
 	inf->mlx = mlx_init();
 	if (!inf->mlx || !xpm_init(inf))
 		return (1);
 	inf->win_ptr = mlx_new_window(inf->mlx,
-			1501, pd.max_height * TILE_SIZE, "cub3d");
+			WIN_WIDTH, WIN_HEIGHT, "cub3d");
 	inf->frame.img_ptr = mlx_new_image(inf->mlx,
-			1501, pd.max_height * TILE_SIZE);
+			WIN_WIDTH, WIN_HEIGHT);
 	inf->frame.adrr = mlx_get_data_addr(inf->frame.img_ptr, &inf->frame.bpp,
 			&inf->frame.size_line, &inf->frame.endian);
 	launch(inf);

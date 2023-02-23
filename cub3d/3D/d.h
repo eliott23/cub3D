@@ -6,7 +6,7 @@
 /*   By: zait-che <zait-che@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/22 06:32:55 by zait-che          #+#    #+#             */
-/*   Updated: 2023/02/22 11:50:36 by zait-che         ###   ########.fr       */
+/*   Updated: 2023/02/23 05:28:01 by zait-che         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 # include <math.h>
 # include "../Parsing/p.h"
 # define TILE_SIZE	64
+# define WIN_WIDTH	1500
+# define WIN_HEIGHT	1000
 
 typedef struct s_index
 {
@@ -71,7 +73,6 @@ typedef struct inf{
 	int		m_h;
 	int		w_h;
 }	t_inf;
-
 
 /** hooks **/
 

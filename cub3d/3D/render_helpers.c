@@ -6,7 +6,7 @@
 /*   By: zait-che <zait-che@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/22 08:13:03 by zait-che          #+#    #+#             */
-/*   Updated: 2023/02/22 11:53:56 by zait-che         ###   ########.fr       */
+/*   Updated: 2023/02/23 05:34:11 by zait-che         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,16 +50,16 @@ int	get_index(t_rays ray)
 	if (ray.h_v == 1)
 	{
 		if (angle > 180 && angle < 360)
-			return (0);
-		else if (angle > 0 && angle < 180)
 			return (1);
+		else if (angle > 0 && angle < 180)
+			return (0);
 	}
 	else
 	{
 		if (angle > 90 && angle < 270)
-			return (2);
-		else if (angle < 90 || angle > 270)
 			return (3);
+		else if (angle < 90 || angle > 270)
+			return (2);
 	}
 	return (-1);
 }
