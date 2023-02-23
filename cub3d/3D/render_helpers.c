@@ -46,7 +46,7 @@ int	get_index(t_rays ray)
 
 	angle = fmod(ray.ray_angle, 360);
 	if (angle < 0)
-		angle *= -1;
+		angle = 360 + angle;
 	if (ray.h_v == 1)
 	{
 		if (angle > 180 && angle < 360)
