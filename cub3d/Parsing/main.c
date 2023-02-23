@@ -6,7 +6,7 @@
 /*   By: zait-che <zait-che@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/22 06:42:58 by zait-che          #+#    #+#             */
-/*   Updated: 2023/02/22 09:03:52 by zait-che         ###   ########.fr       */
+/*   Updated: 2023/02/23 04:11:41 by zait-che         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,17 +34,15 @@ void	ft_free(char *str, char **arr)
 	if (str)
 	{
 		free(str);
-		str = 0;
+		str = NULL;
 	}
 	if (arr)
 	{
 		i = -1;
 		while (arr[++i])
-		{
 			free(arr[i]);
-			arr[i] = NULL;
-		}
-		arr = 0;
+		free(arr);
+		arr = NULL;
 	}
 }
 

@@ -6,13 +6,14 @@
 /*   By: zait-che <zait-che@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/22 07:42:38 by zait-che          #+#    #+#             */
-/*   Updated: 2023/02/22 11:59:35 by zait-che         ###   ########.fr       */
+/*   Updated: 2023/02/23 04:38:41 by zait-che         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "d.h"
 
-//check later on m_h
+//check later on m_hdouble	ain_lhouta(t_inf *inf, int i)
+
 void	render_3d(t_inf *inf)
 {
 	double	dis_pp;
@@ -24,9 +25,11 @@ void	render_3d(t_inf *inf)
 	i.i = 0.0;
 	dis_pp = (1500 / 2) / tan(deg_to_rad(60 / 2));
 	m_h = inf->pd->max_height * TILE_SIZE;
-	while (i.i < 1501)
+	while (i.i < 1500)
 	{
-		w_h = (TILE_SIZE / (inf->rays[(int)i.i].col_dist)) * dis_pp;
+		w_h = (TILE_SIZE / (inf->rays[(int)i.i].col_dist
+					* cos(deg_to_rad(inf->rays[(int)i.i].ray_angle - inf->fov)))
+				) * dis_pp;
 		pixel = check((m_h / 2) - (w_h / 2),
 				(m_h / 2) + (w_h / 2), m_h);
 		draw_sma_wlard(inf, -1, pixel.i, i.i);
@@ -132,25 +135,23 @@ int	main(int ac, char **av)
 	t_pd	pd;
 
 	pd = m_function(ac, av);
-	printf("F %d,%d,%d\n");
-	sleep(900);
 	inf = malloc(sizeof(t_inf));
 	inf->pd = &pd;
-	// get_colors(inf, &pd);
-	// inf->step = 5;
-	// inf->flag = 0;
-	// inf->rays = malloc(sizeof(t_rays) * (1501));
-	// inf->textures = malloc(sizeof(t_xpm) * 4);
-	// inf->mlx = mlx_init();
-	// if (!inf->mlx || !xpm_init(inf))
-	// 	return (1);
-	// inf->win_ptr = mlx_new_window(inf->mlx,
-	// 		1501, pd.max_height * TILE_SIZE, "cub3d");
-	// inf->frame.img_ptr = mlx_new_image(inf->mlx,
-	// 		1501, pd.max_height * TILE_SIZE);
-	// inf->frame.adrr = mlx_get_data_addr(inf->frame.img_ptr, &inf->frame.bpp,
-	// 		&inf->frame.size_line, &inf->frame.endian);
-	// launch(inf);
-	// mlx_hook(inf->win_ptr, 2, 0, key_hook, inf);
-	// mlx_loop(inf->mlx);
+	get_colors(inf, &pd);
+	inf->step = 5;
+	inf->flag = 0;
+	inf->rays = malloc(sizeof(t_rays) * (1501));
+	inf->textures = malloc(sizeof(t_xpm) * 4);
+	inf->mlx = mlx_init();
+	if (!inf->mlx || !xpm_init(inf))
+		return (1);
+	inf->win_ptr = mlx_new_window(inf->mlx,
+			1501, pd.max_height * TILE_SIZE, "cub3d");
+	inf->frame.img_ptr = mlx_new_image(inf->mlx,
+			1501, pd.max_height * TILE_SIZE);
+	inf->frame.adrr = mlx_get_data_addr(inf->frame.img_ptr, &inf->frame.bpp,
+			&inf->frame.size_line, &inf->frame.endian);
+	launch(inf);
+	mlx_hook(inf->win_ptr, 2, 0, key_hook, inf);
+	mlx_loop(inf->mlx);
 }

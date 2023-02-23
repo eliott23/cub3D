@@ -6,7 +6,7 @@
 /*   By: zait-che <zait-che@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/22 06:58:30 by zait-che          #+#    #+#             */
-/*   Updated: 2023/02/22 09:22:10 by zait-che         ###   ########.fr       */
+/*   Updated: 2023/02/23 04:07:54 by zait-che         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ void	m_parsing(t_pd *pd)
 			pd->i++;
 		if (pd->i && pd->i_b[pd->i - 1] == ' ')
 			f_perror();
-		e = element_id((pd->i_b) + pd->i, ft_split("NO SO WE EA F C", ' '));
+		e = element_id((pd->i_b) + pd->i, ft_split("NO SO WE EA F C ", ' '));
 		check_elmnt_n(1, pd, e);
 		skip_to_next(1, pd);
 		s_dup(pd->i_b + pd->i, pd, e);

@@ -1,12 +1,12 @@
 F 160,160,160 
 
 SO textures/mossy.xpm
-EA textures/mossy.xpm
+EA textures/azouz.xpm
 NO textures/greystone_dark.xpm
 WE textures/greystone.xpm
  
 
-C 0,204,204
+C 0,0,204
 
 
 
