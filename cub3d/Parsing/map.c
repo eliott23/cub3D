@@ -67,6 +67,8 @@ void	check_newl(char *s)
 			if (check_empty(s + i + 1))
 				f_perror();
 		}
+		if (s[i] == '\n' && !s[i + 1])
+			f_perror();
 		i++;
 	}
 }
