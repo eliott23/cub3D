@@ -22,13 +22,15 @@ This project is inspired by the world-famous eponymous 90's game, which was the 
 
   The program's only parameter is the map file, it will be parsed, should contain other informations and should be named *.cub. Controls are pretty intuitive to figure out (reagular w,a,s,d + right and left buttons);
 
-## Example of a map file :
+## Parameters : Example of a map file ==>
 
   ![alt text](https://github.com/walywest/Cub3D/blob/master/cub3d/mapexample_cub3d.png)
 
 - C --> ceiling RGB color.
 - F --> floor RGB color.
 - SO EA NO WE respectively south, east, north abd west wall textures (followed by path to xpm).
+
+  As you can see the map is formed by 1 and 0, 1 are obstacles and 0 is empty spaces. be nice and **make sure the map is closed so you don't fall into another spooky digital dimension**.
 
 # Enjoy the maze!
   Enjoy the maze.
